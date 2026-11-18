@@ -25,7 +25,7 @@ Le binôme robotique tactique associe :
 * **Mathis BEAUDUCEL** (*Safran Electronics & Defense*) : Architecte & Firmware bas niveau, microcontrôleurs, cartes de vol critiques.
 * **Arlann LAUNAY** (*Safran Electronics & Defense*) : Bancs d'essais automatisés (TestStand / C++), cartes multicouches KiCad, avionique.
 * **Ayoub OUZANI** (*ArianeGroup*) : FEA, dynamique des matériaux énergétiques, guidage de robots mobiles autonomes.
-* **Mamadou A. DIALLO** (*Schneider Electric*) : Firmware C/C++ embarqué (STM32), protocoles sans fil IoT et contraintes énergétiques.
+* **Yurii KHARKIVSKYI** (*Breizelec*) : Bancs calculateurs ECU, bus CAN temps réel, diagnostic matériel et télécommande sécurisée pour engins autonomes.
 
 ---
 
