@@ -21,11 +21,11 @@ Le binôme robotique tactique associe :
 
 ---
 
-## 👥 Collectif d'Ingénierie (ENSTA Bretagne & Partenaires Industriels)
-* **Mathis BEAUDUCEL** (*Safran Electronics & Defense*) : Architecte & Firmware bas niveau, microcontrôleurs, cartes de vol critiques.
-* **Arlann LAUNAY** (*Safran Electronics & Defense*) : Bancs d'essais automatisés (TestStand / C++), cartes multicouches KiCad, avionique.
-* **Ayoub OUZANI** (*ArianeGroup*) : FEA, dynamique des matériaux énergétiques, guidage de robots mobiles autonomes.
-* **Yurii KHARKIVSKYI** (*Breizelec*) : Bancs calculateurs ECU, bus CAN temps réel, diagnostic matériel et télécommande sécurisée pour engins autonomes.
+## 👥 Participants du Projet
+* **Mathis BEAUDUCEL** (*Safran Electronics & Defense*)
+* **Arlann LAUNAY** (*Safran Electronics & Defense*)
+* **Ayoub OUZANI** (*ArianeGroup*)
+* **Yurii KHARKIVSKYI** (*Breizelec*)
 
 ---
 

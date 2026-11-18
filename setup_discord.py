@@ -19,7 +19,7 @@ import os
 import discord
 
 # --- CONFIGURATION DES ROLES ---
-# Pas de rôles rigides : l'équipe participe pour le fun, tout le monde touche à tout !
+# Aucun rôle particulier attribué : rôle unique pour les participants
 ROLES_CONFIG = [
     {
         "name": "TALOS",
