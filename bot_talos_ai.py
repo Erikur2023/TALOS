@@ -279,9 +279,8 @@ def create_client(with_message_content=True):
 
 
 def main():
-    use_msg_content = os.environ.get("ENABLE_MESSAGE_CONTENT", "0") == "1"
     try:
-        c = create_client(with_message_content=use_msg_content)
+        c = create_client(with_message_content=True)
         c.run(DISCORD_TOKEN)
     except Exception as e:
         print(f"[-] Erreur Discord : {e}")
