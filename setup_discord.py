@@ -19,40 +19,17 @@ import os
 import discord
 
 # --- CONFIGURATION DES ROLES ---
+# Pas de rôles rigides : l'équipe participe pour le fun, tout le monde touche à tout !
 ROLES_CONFIG = [
     {
-        "name": "👑 Tech Lead / Coordination",
-        "color": discord.Color.from_rgb(241, 196, 15),  # Or
-        "hoist": True,
-        "mentionable": True,
-    },
-    {
-        "name": "🔵 Architecte & Systemes Embarques",
-        "color": discord.Color.from_rgb(52, 152, 219),  # Bleu
-        "hoist": True,
-        "mentionable": True,
-    },
-    {
-        "name": "🟣 Simulation & Controle RL",
-        "color": discord.Color.from_rgb(155, 89, 182),  # Violet
-        "hoist": True,
-        "mentionable": True,
-    },
-    {
-        "name": "🟢 Guidage, SLAM & Navigation",
-        "color": discord.Color.from_rgb(46, 204, 113),  # Vert
-        "hoist": True,
-        "mentionable": True,
-    },
-    {
-        "name": "🟠 Test, Instrumentation & ROS2",
-        "color": discord.Color.from_rgb(230, 126, 34),  # Orange
+        "name": "TALOS",
+        "color": discord.Color.from_rgb(0, 229, 255),
         "hoist": True,
         "mentionable": True,
     },
     {
         "name": "🤖 Bot & Automations",
-        "color": discord.Color.from_rgb(149, 165, 166),  # Gris
+        "color": discord.Color.from_rgb(149, 165, 166),
         "hoist": False,
         "mentionable": False,
     },
