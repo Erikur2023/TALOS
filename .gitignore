@@ -1,0 +1,13 @@
+# Python
+__pycache__/
+*.py[cod]
+*.log
+
+# Virtual environments
+venv/
+.env
+
+# Temp files
+_dance_scene_tmp.xml
+video_frames/
+*.tmp

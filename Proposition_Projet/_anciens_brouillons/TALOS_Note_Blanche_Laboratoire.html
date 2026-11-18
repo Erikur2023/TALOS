@@ -1,0 +1,662 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<title>TALOS - Note Technique de Laboratoire</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap');
+
+  @page {
+    size: A4 portrait;
+    margin: 15mm 16mm 14mm 16mm;
+  }
+  
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+  
+  body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    color: #111827;
+    background: #ffffff;
+    font-size: 8.95pt;
+    line-height: 1.48;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+    letter-spacing: -0.01em;
+  }
+  
+  .page {
+    width: 100%;
+    height: 268mm;
+    max-height: 268mm;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    page-break-after: always;
+    overflow: hidden;
+  }
+  
+  .page:last-child {
+    page-break-after: avoid;
+  }
+
+  /* Top Masthead */
+  .masthead {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    border-bottom: 1.5px solid #0f172a;
+    padding-bottom: 8px;
+    margin-bottom: 13px;
+  }
+  
+  .masthead-inst {
+    font-size: 7.3pt;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #4b5563;
+    line-height: 1.35;
+  }
+
+  .masthead-inst strong {
+    color: #0f172a;
+    font-weight: 700;
+  }
+  
+  .masthead-meta {
+    text-align: right;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 7.2pt;
+    color: #4b5563;
+    line-height: 1.35;
+  }
+
+  /* Document Title */
+  .doc-title-block {
+    margin-bottom: 13px;
+  }
+
+  .doc-pretitle {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 7.6pt;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: #0284c7;
+    margin-bottom: 4px;
+  }
+
+  .doc-title {
+    font-size: 17.5pt;
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    color: #0f172a;
+    line-height: 1.15;
+    margin-bottom: 5px;
+  }
+
+  .doc-subtitle {
+    font-size: 9.2pt;
+    font-weight: 400;
+    color: #475569;
+    line-height: 1.38;
+  }
+
+  /* Section Styling */
+  .section {
+    margin-bottom: 13px;
+  }
+
+  .section-num {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 8.5pt;
+    font-weight: 700;
+    color: #0284c7;
+    margin-right: 5px;
+  }
+
+  h2 {
+    font-size: 9.8pt;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    color: #0f172a;
+    text-transform: uppercase;
+    display: flex;
+    align-items: baseline;
+    border-bottom: 0.5px solid #cbd5e1;
+    padding-bottom: 4px;
+    margin-bottom: 9px;
+  }
+
+  p {
+    margin-bottom: 8px;
+    text-align: justify;
+    text-justify: inter-word;
+    color: #334155;
+  }
+
+  strong {
+    color: #0f172a;
+    font-weight: 600;
+  }
+
+  .lead {
+    font-size: 9.1pt;
+    color: #1e293b;
+    line-height: 1.5;
+  }
+
+  .code-inline {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 7.8pt;
+    color: #0f172a;
+    background: #f1f5f9;
+    padding: 1px 3px;
+    border-radius: 2px;
+  }
+
+  /* Team Roster List (Pure Editorial) */
+  .roster-list {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px 16px;
+    margin-top: 8px;
+    margin-bottom: 10px;
+  }
+
+  .roster-item {
+    border-left: 2px solid #0f172a;
+    padding-left: 8px;
+  }
+
+  .roster-name {
+    font-weight: 700;
+    font-size: 8.7pt;
+    color: #0f172a;
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+  }
+
+  .roster-org {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 7.2pt;
+    font-weight: 600;
+    color: #0284c7;
+    text-transform: uppercase;
+  }
+
+  .roster-desc {
+    font-size: 7.8pt;
+    color: #475569;
+    line-height: 1.32;
+    margin-top: 2px;
+  }
+
+  /* Sub-challenges Editorial Blocks */
+  .track-block {
+    margin-bottom: 8px;
+  }
+
+  .track-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 2px;
+  }
+
+  .track-title {
+    font-size: 8.8pt;
+    font-weight: 700;
+    color: #0f172a;
+  }
+
+  .track-tech {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 7.3pt;
+    font-weight: 600;
+    color: #0284c7;
+  }
+
+  .track-body {
+    font-size: 8.2pt;
+    color: #334155;
+    line-height: 1.4;
+  }
+
+  /* Minimalist Architecture Dataflow */
+  .arch-strip {
+    border-top: 0.5px solid #cbd5e1;
+    border-bottom: 0.5px solid #cbd5e1;
+    padding: 7px 0;
+    margin: 9px 0;
+    display: grid;
+    grid-template-columns: 1fr auto 1.35fr auto 1fr;
+    align-items: center;
+    gap: 10px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 7.4pt;
+  }
+
+  .arch-node {
+    padding: 2px 0;
+  }
+
+  .arch-node-title {
+    font-weight: 700;
+    color: #0f172a;
+    margin-bottom: 2px;
+    font-size: 7.3pt;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  .arch-node-sub {
+    color: #64748b;
+    font-size: 7.0pt;
+    line-height: 1.3;
+  }
+
+  .arch-arrow {
+    color: #0284c7;
+    font-weight: bold;
+    font-size: 9.5pt;
+  }
+
+  /* Accomplishments List */
+  .accomplishment-item {
+    margin-bottom: 7px;
+  }
+
+  .accomplishment-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 1px;
+  }
+
+  .accomplishment-title {
+    font-size: 8.6pt;
+    font-weight: 700;
+    color: #0f172a;
+  }
+
+  .accomplishment-entity {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 7.1pt;
+    font-weight: 600;
+    color: #0284c7;
+  }
+
+  .accomplishment-text {
+    font-size: 8.0pt;
+    color: #334155;
+    line-height: 1.36;
+  }
+
+  /* Timeline Table */
+  .timeline-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 7px 0;
+    font-size: 7.7pt;
+  }
+
+  .timeline-table th {
+    text-align: left;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 7.1pt;
+    font-weight: 600;
+    color: #64748b;
+    border-bottom: 1px solid #0f172a;
+    padding-bottom: 4px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  .timeline-table td {
+    padding: 4px 0;
+    border-bottom: 0.5px solid #e2e8f0;
+    color: #334155;
+    vertical-align: top;
+  }
+
+  .timeline-table td.date {
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 600;
+    color: #0f172a;
+    width: 25%;
+  }
+
+  /* References Footer Block */
+  .ref-block {
+    border-top: 1px solid #0f172a;
+    padding-top: 6px;
+    margin-top: 8px;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    font-size: 7.4pt;
+  }
+
+  .ref-col strong {
+    display: block;
+    font-size: 7.7pt;
+    color: #0f172a;
+    margin-bottom: 1px;
+  }
+
+  .ref-col span {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 7.1pt;
+    color: #0284c7;
+  }
+
+  /* Footer */
+  .footer {
+    border-top: 0.5px solid #cbd5e1;
+    padding-top: 4px;
+    display: flex;
+    justify-content: space-between;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 7.2pt;
+    color: #64748b;
+  }
+</style>
+</head>
+<body>
+
+<!-- ================= PAGE 1 ================= -->
+<div class="page">
+  <div>
+    <!-- Top Masthead -->
+    <div class="masthead">
+      <div class="masthead-inst">
+        Direction Générale de l'Armement &bull; Agence de l'Innovation de Défense<br>
+        <strong>ENSTA Bretagne &bull; Département Systèmes Embarqués &bull; Équipe TALOS</strong>
+      </div>
+      <div class="masthead-meta">
+        IDENTIFIANT : #225<br>
+        CONCOURS NATIONAL ROBOTIQUE DÉFENSE 2026<br>
+        GRAND PALAIS, PARIS &bull; 2&ndash;4 DÉC. 2026
+      </div>
+    </div>
+
+    <!-- Title Block -->
+    <div class="doc-title-block">
+      <div class="doc-pretitle">Note Technique d'Intention &bull; Track 1</div>
+      <h1 class="doc-title">Navigation Autonome &amp; Mobilité en Terrain Dégradé</h1>
+      <div class="doc-subtitle">
+        Architecture modulaire sans GPS, estimation d'état laser-inertielle et commande déterministe pour robot humanoïde Unitree G1.
+      </div>
+    </div>
+
+    <!-- Section 1 : Équipe & Démarche -->
+    <div class="section">
+      <h2><span class="section-num">01.</span> Collectif d'Ingénierie &amp; Motivation Opérationnelle</h2>
+      <p class="lead">
+        L'équipe <strong>TALOS</strong> réunit 5 élèves-ingénieurs de l'<strong>ENSTA Bretagne</strong> (école sous tutelle de la <strong>DGA</strong>) spécialisés en systèmes embarqués, traitement du signal et électronique critique. Formés aux exigences de sûreté et de souveraineté des forces armées, nous abordons ce challenge comme un <strong>bureau d'études unifié</strong> : chaque membre contribue de façon transversale à l'architecture, la simulation physique et l'intégration matérielle, en s'appuyant sur son expérience en industrie de défense et haute technologie :
+      </p>
+
+      <!-- Roster Grid -->
+      <div class="roster-list">
+        <div class="roster-item">
+          <div class="roster-name">
+            <span>Mathis BEAUDUCEL</span>
+            <span class="roster-org">Safran E&amp;D</span>
+          </div>
+          <div class="roster-desc">
+            Conception de logiciels embarqués sur microcontrôleurs et Raspberry Pi ; réparation de cartes électroniques, rétro-ingénierie et conception matérielle.
+          </div>
+        </div>
+
+        <div class="roster-item">
+          <div class="roster-name">
+            <span>Ayoub OUZANI</span>
+            <span class="roster-org">ArianeGroup</span>
+          </div>
+          <div class="roster-desc">
+            Sûreté de fonctionnement de lanceurs spatiaux, modélisation de systèmes dynamiques, tolérance aux pannes et lois de commande robuste.
+          </div>
+        </div>
+
+        <div class="roster-item">
+          <div class="roster-name">
+            <span>Yurii KHARKIVSKYI</span>
+            <span class="roster-org">Breizelec</span>
+          </div>
+          <div class="roster-desc">
+            Bancs d'essai calculateurs ECU, bus CAN temps réel, diagnostic matériel et développement d'un kit de pilotage déporté sans fil pour engins autonomes.
+          </div>
+        </div>
+
+        <div class="roster-item">
+          <div class="roster-name">
+            <span>Mamadou Alpha DIALLO</span>
+            <span class="roster-org">Schneider Electric</span>
+          </div>
+          <div class="roster-desc">
+            IoT Sensors : développement firmware C/C++ bas niveau (STM32, EFR32), protocoles sans fil et acquisition capteurs sous contraintes sévères.
+          </div>
+        </div>
+      </div>
+
+      <div class="roster-item" style="margin-bottom: 10px;">
+        <div class="roster-name">
+          <span>Arlann LAUNAY</span>
+          <span class="roster-org">Safran Electronics &amp; Defense</span>
+        </div>
+        <div class="roster-desc">
+          Conception de cartes d'auto-test multi-couches (KiCad), programmes de test automatisés sous TestStand/C++ et qualification de calculateurs critiques civils et militaires.
+        </div>
+      </div>
+
+      <p>
+        <strong>Motivation opérationnelle :</strong> En milieu hostile ou clos (bâtiments sinistrés, galeries, zones NRBC), les signaux GNSS sont inopérants ou délibérément brouillés. Si le robot humanoïde Unitree G1 offre une adaptabilité morphologique sans égale (franchissement de marches, portes étroites), sa chaîne de commande doit être strictement déterministe. Notre engagement est d'apporter au Grand Palais une <strong>solution éprouvée sur simulateur physique, dénuée d'artifices et immédiatement opérationnelle sur cible réelle sans casse matérielle</strong>.
+      </p>
+    </div>
+
+    <!-- Section 2 : Pistes de solutions techniques -->
+    <div class="section">
+      <h2><span class="section-num">02.</span> Pistes Techniques &amp; Traitement des Sous-Défis</h2>
+      <p>
+        Pour garantir réactivité et traçabilité, nous écartons les architectures opaques au profit d'un pipeline standardisé sous <strong>ROS 2 Humble</strong>, découplé en briques logiques testables unitairement :
+      </p>
+
+      <!-- Track A -->
+      <div class="track-block">
+        <div class="track-header">
+          <span class="track-title">A. Odométrie laser-inertielle en environnement GPS-denied</span>
+          <span class="track-tech">Point-LIO + IMU 100 Hz</span>
+        </div>
+        <div class="track-body">
+          Estimation d'état 3D par fusion continue des nuages de points LiDAR et des mesures inertielles haute fréquence. L'algorithme <span class="code-inline">Point-LIO</span> compense dynamiquement les accélérations répétées de la locomotion bipède sans accumuler de dérive géométrique, assurant une navigation continue en obscurité totale et sous fumigènes.
+        </div>
+      </div>
+
+      <!-- Track B -->
+      <div class="track-block">
+        <div class="track-header">
+          <span class="track-title">B. Traversabilité continue en terrain chaotique et dévers (30&deg;)</span>
+          <span class="track-tech">GridMap 2.5D &bull; Élévation</span>
+        </div>
+        <div class="track-body">
+          Cartographie locale d'élévation temps réel évaluant le gradient de pente, la rugosité de contact et la hauteur des ressauts. Le maillage classe chaque cellule selon un seuil d'adhérence et d'inclinaison, permettant au planificateur d'adapter l'amplitude des appuis et d'éviter les zones d'instabilité (&gt; 25&deg;).
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer Page 1 -->
+  <div class="footer">
+    <span>TALOS // NOTE TECHNIQUE D'INTENTION &bull; TRACK 1</span>
+    <span>PAGE 1 SUR 2</span>
+  </div>
+</div>
+
+<!-- ================= PAGE 2 ================= -->
+<div class="page">
+  <div>
+    <!-- Top Masthead Page 2 -->
+    <div class="masthead">
+      <div class="masthead-inst">
+        Équipe TALOS &bull; ENSTA Bretagne<br>
+        <strong>Architecture Système, Traçabilité &amp; Sûreté de Fonctionnement</strong>
+      </div>
+      <div class="masthead-meta">
+        PLATEFORMES : UNITREE G1 &bull; GO2<br>
+        STACK : ROS 2 HUMBLE &bull; CYCLONEDDS V0.10.2<br>
+        SIMULATEUR : UNITREE_MUJOCO
+      </div>
+    </div>
+
+    <!-- Suite Section 2 -->
+    <div class="section">
+      <!-- Track C -->
+      <div class="track-block">
+        <div class="track-header">
+          <span class="track-title">C. Planification réactive, franchissement de sas &amp; détection de cibles</span>
+          <span class="track-tech">Nav2 &bull; BehaviorTree.CPP &bull; RGB-D</span>
+        </div>
+        <div class="track-body">
+          Orchestration par arbre de décision (Behavior Tree) gérant le replanning dynamique en cas d'obstruction imprévue, le resserrement du gabarit de marche lors du passage d'ouvertures étroites (&le; 70 cm), et l'acquisition visuelle géoréférencée des repères tactiques imposés par le scénario.
+        </div>
+      </div>
+
+      <!-- Track D -->
+      <div class="track-block">
+        <div class="track-header">
+          <span class="track-title">D. Sûreté matérielle déterministe &amp; Validation Sim2Real</span>
+          <span class="track-tech">unitree_mujoco &bull; Watchdog Anti-chute</span>
+        </div>
+        <div class="track-body">
+          Zéro déploiement sans certification préalable sur le jumeau physique <span class="code-inline">unitree_mujoco</span> opérant avec la pile middleware réelle (<span class="code-inline">CycloneDDS 0.10.2</span>). Un nœud de sécurité matériel coupe les servomoteurs et bascule en posture amortie si le roulis ou tangage dépasse 25&deg;, garantissant l'intégrité de la machine.
+        </div>
+      </div>
+
+      <!-- Architecture Strip (Pure Editorial) -->
+      <div class="arch-strip">
+        <div class="arch-node">
+          <div class="arch-node-title">1. Capteurs Bruts</div>
+          <div class="arch-node-sub">LiDAR 3D &bull; IMU 100 Hz &bull; Caméra RGB-D</div>
+        </div>
+        <div class="arch-arrow">&rarr;</div>
+        <div class="arch-node">
+          <div class="arch-node-title">2. Traitement ROS 2</div>
+          <div class="arch-node-sub">Point-LIO (Pose) &bull; GridMap 2.5D &bull; Nav2 BT</div>
+        </div>
+        <div class="arch-arrow">&rarr;</div>
+        <div class="arch-node">
+          <div class="arch-node-title">3. Action &amp; Sûreté</div>
+          <div class="arch-node-sub">Unitree SDK 2 &bull; Watchdog &bull; Sim MuJoCo</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Section 3 : Réalisations concrètes -->
+    <div class="section">
+      <h2><span class="section-num">03.</span> Réalisations Concrètes &amp; Antécédents Industriels</h2>
+      
+      <div class="accomplishment-item">
+        <div class="accomplishment-head">
+          <span class="accomplishment-title">Logiciels embarqués sur microcontrôleurs &amp; qualification avionique</span>
+          <span class="accomplishment-entity">Safran Electronics &amp; Defense &bull; Mathis B. &amp; Arlann L.</span>
+        </div>
+        <div class="accomplishment-text">
+          Conception de firmwares et applications sous microcontrôleurs et Raspberry Pi, réparation de cartes de vol critiques, rétro-ingénierie et conception matérielle (Mathis). Développement de bancs de test automatisés (TestStand/C++) et routage de cartes d'auto-test multi-couches KiCad pour calculateurs militaires (Arlann).
+        </div>
+      </div>
+
+      <div class="accomplishment-item">
+        <div class="accomplishment-head">
+          <span class="accomplishment-title">Télécommande sécurisée sans fil &amp; Bridge temps réel sur bus CAN</span>
+          <span class="accomplishment-entity">Breizelec &bull; Yurii K.</span>
+        </div>
+        <div class="accomplishment-text">
+          Développement d'un système de commande déportée sans fil interfacé au système de guidage AutoTrac pour engins agricoles autonomes. Conception d'un bridge CAN bus capable de filtrer, analyser et altérer des trames en temps réel pour diagnostic et sûreté.
+        </div>
+      </div>
+
+      <div class="accomplishment-item">
+        <div class="accomplishment-head">
+          <span class="accomplishment-title">Modélisation dynamique &amp; Sûreté de fonctionnement sur lanceurs spatiaux</span>
+          <span class="accomplishment-entity">ArianeGroup &bull; Ayoub O.</span>
+        </div>
+        <div class="accomplishment-text">
+          Analyses de robustesse, tolérance aux fautes et simulation numérique de sous-systèmes critiques soumis à des environnements sévères. Méthodes de fiabilisation transposables directement aux plateformes robotiques en milieu dégradé.
+        </div>
+      </div>
+
+      <div class="accomplishment-item">
+        <div class="accomplishment-head">
+          <span class="accomplishment-title">Acquisition capteurs IoT temps réel &amp; Bibliothèques système en C</span>
+          <span class="accomplishment-entity">Schneider Electric &bull; Mamadou D.</span>
+        </div>
+        <div class="accomplishment-text">
+          Implémentation firmware optimisé sur cibles STM32 et Silicon Labs EFR32 (UART sous interruptions, BLE). Développement de bibliothèques système modulaires en C avec structures dynamiques (dépôts de code publics consultables).
+        </div>
+      </div>
+    </div>
+
+    <!-- Section Roadmap -->
+    <div class="section">
+      <h2><span class="section-num">04.</span> Jalons Techniques &amp; Préparation Opérationnelle</h2>
+      <table class="timeline-table">
+        <thead>
+          <tr>
+            <th>ÉCHÉANCE</th>
+            <th>OBJECTIF TECHNIQUE</th>
+            <th>CRITÈRE DE VALIDATION</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="date">12 &ndash; 31 Octobre</td>
+            <td>Jumeau numérique MuJoCo sous CycloneDDS v0.10.2 &amp; couplage Point-LIO</td>
+            <td>Odométrie laser-inertielle stable sans dérive sous ROS 2</td>
+          </tr>
+          <tr>
+            <td class="date">Novembre</td>
+            <td>Cartographie GridMap 2.5D &amp; franchissement gravats/pentes simulés</td>
+            <td>Arbres Nav2 franchissant 20 m d'obstacles sans chute</td>
+          </tr>
+          <tr>
+            <td class="date">2 &ndash; 4 Décembre</td>
+            <td>Qualification matérielle sur site avec mentors Innov8 (Grand Palais)</td>
+            <td>Mission 100% autonome validée devant le jury DGA / AID</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- References Block -->
+    <div class="ref-block">
+      <div class="ref-col">
+        <strong>Mathis BEAUDUCEL</strong>
+        <span>linkedin.com/in/mathis-beauducel</span>
+      </div>
+      <div class="ref-col">
+        <strong>Mamadou Alpha DIALLO</strong>
+        <span>github.com/alphadiallo63</span>
+      </div>
+      <div class="ref-col">
+        <strong>Arlann L. &bull; Yurii K. &bull; Ayoub O.</strong>
+        <span>ENSTA Bretagne &bull; Brest, France</span>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Footer Page 2 -->
+  <div class="footer">
+    <span>TALOS // NOTE TECHNIQUE D'INTENTION &bull; TRACK 1</span>
+    <span>PAGE 2 SUR 2</span>
+  </div>
+</div>
+
+</body>
+</html>

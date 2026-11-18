@@ -1,0 +1,452 @@
+[
+  {
+    "generation": 1,
+    "episodes": 40,
+    "best_score": 351.9300596956457,
+    "success_rate": 0.0,
+    "clean_rate": 100.0,
+    "avg_speed": 0.28111379358553823,
+    "elapsed_s": 2.0
+  },
+  {
+    "generation": 2,
+    "episodes": 80,
+    "best_score": 351.9300596956457,
+    "success_rate": 0.0,
+    "clean_rate": 100.0,
+    "avg_speed": 0.28270726443518324,
+    "elapsed_s": 3.6
+  },
+  {
+    "generation": 3,
+    "episodes": 120,
+    "best_score": 351.9300596956457,
+    "success_rate": 0.0,
+    "clean_rate": 100.0,
+    "avg_speed": 0.29309030299049166,
+    "elapsed_s": 4.7
+  },
+  {
+    "generation": 4,
+    "episodes": 160,
+    "best_score": 351.9300596956457,
+    "success_rate": 0.0,
+    "clean_rate": 100.0,
+    "avg_speed": 0.3008738668015364,
+    "elapsed_s": 5.8
+  },
+  {
+    "generation": 5,
+    "episodes": 200,
+    "best_score": 351.9300596956457,
+    "success_rate": 0.0,
+    "clean_rate": 100.0,
+    "avg_speed": 0.3089290153688409,
+    "elapsed_s": 7.0
+  },
+  {
+    "generation": 6,
+    "episodes": 240,
+    "best_score": 351.9300596956457,
+    "success_rate": 0.0,
+    "clean_rate": 100.0,
+    "avg_speed": 0.31706425476338074,
+    "elapsed_s": 8.3
+  },
+  {
+    "generation": 7,
+    "episodes": 280,
+    "best_score": 351.9300596956457,
+    "success_rate": 0.0,
+    "clean_rate": 100.0,
+    "avg_speed": 0.3208861260105534,
+    "elapsed_s": 9.5
+  },
+  {
+    "generation": 8,
+    "episodes": 320,
+    "best_score": 351.9300596956457,
+    "success_rate": 0.0,
+    "clean_rate": 100.0,
+    "avg_speed": 0.3193880465653124,
+    "elapsed_s": 10.6
+  },
+  {
+    "generation": 9,
+    "episodes": 360,
+    "best_score": 351.9300596956457,
+    "success_rate": 0.0,
+    "clean_rate": 100.0,
+    "avg_speed": 0.32850513459948083,
+    "elapsed_s": 11.9
+  },
+  {
+    "generation": 10,
+    "episodes": 400,
+    "best_score": 351.9300596956457,
+    "success_rate": 0.0,
+    "clean_rate": 100.0,
+    "avg_speed": 0.33246200629518746,
+    "elapsed_s": 13.1
+  },
+  {
+    "generation": 11,
+    "episodes": 440,
+    "best_score": 351.9300596956457,
+    "success_rate": 0.0,
+    "clean_rate": 100.0,
+    "avg_speed": 0.3378154269817829,
+    "elapsed_s": 14.3
+  },
+  {
+    "generation": 12,
+    "episodes": 480,
+    "best_score": 351.9300596956457,
+    "success_rate": 0.0,
+    "clean_rate": 100.0,
+    "avg_speed": 0.34018290152396774,
+    "elapsed_s": 15.4
+  },
+  {
+    "generation": 13,
+    "episodes": 520,
+    "best_score": 351.9300596956457,
+    "success_rate": 0.0,
+    "clean_rate": 100.0,
+    "avg_speed": 0.34324987721008554,
+    "elapsed_s": 16.7
+  },
+  {
+    "generation": 14,
+    "episodes": 560,
+    "best_score": 351.9300596956457,
+    "success_rate": 0.0,
+    "clean_rate": 100.0,
+    "avg_speed": 0.3473546314675152,
+    "elapsed_s": 17.9
+  },
+  {
+    "generation": 15,
+    "episodes": 600,
+    "best_score": 354.56210503054825,
+    "success_rate": 0.0,
+    "clean_rate": 100.0,
+    "avg_speed": 0.35133332378535487,
+    "elapsed_s": 19.0
+  },
+  {
+    "generation": 16,
+    "episodes": 640,
+    "best_score": 354.56210503054825,
+    "success_rate": 0.0,
+    "clean_rate": 100.0,
+    "avg_speed": 0.35266628724466836,
+    "elapsed_s": 20.2
+  },
+  {
+    "generation": 17,
+    "episodes": 680,
+    "best_score": 354.56210503054825,
+    "success_rate": 0.0,
+    "clean_rate": 100.0,
+    "avg_speed": 0.3545427006293432,
+    "elapsed_s": 21.5
+  },
+  {
+    "generation": 18,
+    "episodes": 720,
+    "best_score": 354.56210503054825,
+    "success_rate": 0.0,
+    "clean_rate": 100.0,
+    "avg_speed": 0.3569687319758339,
+    "elapsed_s": 22.7
+  },
+  {
+    "generation": 19,
+    "episodes": 760,
+    "best_score": 357.9548582514898,
+    "success_rate": 0.0,
+    "clean_rate": 100.0,
+    "avg_speed": 0.36041113588808865,
+    "elapsed_s": 23.9
+  },
+  {
+    "generation": 20,
+    "episodes": 800,
+    "best_score": 357.9548582514898,
+    "success_rate": 0.0,
+    "clean_rate": 100.0,
+    "avg_speed": 0.360229170443525,
+    "elapsed_s": 25.1
+  },
+  {
+    "generation": 21,
+    "episodes": 840,
+    "best_score": 357.9548582514898,
+    "success_rate": 0.0,
+    "clean_rate": 100.0,
+    "avg_speed": 0.36403585595341575,
+    "elapsed_s": 26.3
+  },
+  {
+    "generation": 22,
+    "episodes": 880,
+    "best_score": 357.9548582514898,
+    "success_rate": 0.0,
+    "clean_rate": 100.0,
+    "avg_speed": 0.3636276137915602,
+    "elapsed_s": 27.4
+  },
+  {
+    "generation": 23,
+    "episodes": 920,
+    "best_score": 357.9548582514898,
+    "success_rate": 0.0,
+    "clean_rate": 100.0,
+    "avg_speed": 0.3655013755728865,
+    "elapsed_s": 28.6
+  },
+  {
+    "generation": 24,
+    "episodes": 960,
+    "best_score": 357.9548582514898,
+    "success_rate": 0.0,
+    "clean_rate": 100.0,
+    "avg_speed": 0.36750660319359774,
+    "elapsed_s": 29.9
+  },
+  {
+    "generation": 25,
+    "episodes": 1000,
+    "best_score": 357.9548582514898,
+    "success_rate": 0.0,
+    "clean_rate": 100.0,
+    "avg_speed": 0.368251685152211,
+    "elapsed_s": 31.0
+  },
+  {
+    "generation": 26,
+    "episodes": 1040,
+    "best_score": 357.9870220435997,
+    "success_rate": 0.0,
+    "clean_rate": 100.0,
+    "avg_speed": 0.36844876460093323,
+    "elapsed_s": 32.2
+  },
+  {
+    "generation": 27,
+    "episodes": 1080,
+    "best_score": 357.9870220435997,
+    "success_rate": 0.0,
+    "clean_rate": 100.0,
+    "avg_speed": 0.3689795595460325,
+    "elapsed_s": 33.4
+  },
+  {
+    "generation": 28,
+    "episodes": 1120,
+    "best_score": 358.3694933082559,
+    "success_rate": 0.0,
+    "clean_rate": 100.0,
+    "avg_speed": 0.3701766614151295,
+    "elapsed_s": 34.6
+  },
+  {
+    "generation": 29,
+    "episodes": 1160,
+    "best_score": 358.3694933082559,
+    "success_rate": 0.0,
+    "clean_rate": 100.0,
+    "avg_speed": 0.37122385037380756,
+    "elapsed_s": 35.8
+  },
+  {
+    "generation": 30,
+    "episodes": 1200,
+    "best_score": 359.4854225778792,
+    "success_rate": 0.0,
+    "clean_rate": 100.0,
+    "avg_speed": 0.3716228982865042,
+    "elapsed_s": 37.0
+  },
+  {
+    "generation": 31,
+    "episodes": 1240,
+    "best_score": 359.4854225778792,
+    "success_rate": 0.0,
+    "clean_rate": 100.0,
+    "avg_speed": 0.37199046332129293,
+    "elapsed_s": 38.3
+  },
+  {
+    "generation": 32,
+    "episodes": 1280,
+    "best_score": 359.4854225778792,
+    "success_rate": 0.0,
+    "clean_rate": 100.0,
+    "avg_speed": 0.3719325117830655,
+    "elapsed_s": 39.5
+  },
+  {
+    "generation": 33,
+    "episodes": 1320,
+    "best_score": 359.4854225778792,
+    "success_rate": 0.0,
+    "clean_rate": 100.0,
+    "avg_speed": 0.37203894510342655,
+    "elapsed_s": 40.8
+  },
+  {
+    "generation": 34,
+    "episodes": 1360,
+    "best_score": 359.4854225778792,
+    "success_rate": 0.0,
+    "clean_rate": 100.0,
+    "avg_speed": 0.3730891891682425,
+    "elapsed_s": 42.7
+  },
+  {
+    "generation": 35,
+    "episodes": 1400,
+    "best_score": 359.4854225778792,
+    "success_rate": 0.0,
+    "clean_rate": 100.0,
+    "avg_speed": 0.37345276876040917,
+    "elapsed_s": 44.6
+  },
+  {
+    "generation": 36,
+    "episodes": 1440,
+    "best_score": 359.4854225778792,
+    "success_rate": 0.0,
+    "clean_rate": 100.0,
+    "avg_speed": 0.37385613681109053,
+    "elapsed_s": 46.6
+  },
+  {
+    "generation": 37,
+    "episodes": 1480,
+    "best_score": 359.6273353592971,
+    "success_rate": 0.0,
+    "clean_rate": 100.0,
+    "avg_speed": 0.374137168587934,
+    "elapsed_s": 48.6
+  },
+  {
+    "generation": 38,
+    "episodes": 1520,
+    "best_score": 359.6273353592971,
+    "success_rate": 0.0,
+    "clean_rate": 100.0,
+    "avg_speed": 0.3743366282196835,
+    "elapsed_s": 50.5
+  },
+  {
+    "generation": 39,
+    "episodes": 1560,
+    "best_score": 359.65310409862315,
+    "success_rate": 0.0,
+    "clean_rate": 100.0,
+    "avg_speed": 0.37462208565009913,
+    "elapsed_s": 52.4
+  },
+  {
+    "generation": 40,
+    "episodes": 1600,
+    "best_score": 359.8657720539323,
+    "success_rate": 0.0,
+    "clean_rate": 100.0,
+    "avg_speed": 0.37458179110320744,
+    "elapsed_s": 54.3
+  },
+  {
+    "generation": 41,
+    "episodes": 1640,
+    "best_score": 359.8657720539323,
+    "success_rate": 0.0,
+    "clean_rate": 100.0,
+    "avg_speed": 0.37453507936970815,
+    "elapsed_s": 56.3
+  },
+  {
+    "generation": 42,
+    "episodes": 1680,
+    "best_score": 359.8657720539323,
+    "success_rate": 0.0,
+    "clean_rate": 100.0,
+    "avg_speed": 0.3753805277377563,
+    "elapsed_s": 58.2
+  },
+  {
+    "generation": 43,
+    "episodes": 1720,
+    "best_score": 359.8657720539323,
+    "success_rate": 0.0,
+    "clean_rate": 100.0,
+    "avg_speed": 0.37576625113766043,
+    "elapsed_s": 60.3
+  },
+  {
+    "generation": 44,
+    "episodes": 1760,
+    "best_score": 359.8657720539323,
+    "success_rate": 0.0,
+    "clean_rate": 100.0,
+    "avg_speed": 0.3754675136708599,
+    "elapsed_s": 62.2
+  },
+  {
+    "generation": 45,
+    "episodes": 1800,
+    "best_score": 359.8657720539323,
+    "success_rate": 0.0,
+    "clean_rate": 100.0,
+    "avg_speed": 0.3755416714914078,
+    "elapsed_s": 64.2
+  },
+  {
+    "generation": 46,
+    "episodes": 1840,
+    "best_score": 360.07719958021863,
+    "success_rate": 0.0,
+    "clean_rate": 100.0,
+    "avg_speed": 0.3756541050754859,
+    "elapsed_s": 66.1
+  },
+  {
+    "generation": 47,
+    "episodes": 1880,
+    "best_score": 360.07719958021863,
+    "success_rate": 0.0,
+    "clean_rate": 100.0,
+    "avg_speed": 0.37594914146024544,
+    "elapsed_s": 68.1
+  },
+  {
+    "generation": 48,
+    "episodes": 1920,
+    "best_score": 360.3298156514498,
+    "success_rate": 0.0,
+    "clean_rate": 100.0,
+    "avg_speed": 0.3765983656301489,
+    "elapsed_s": 70.2
+  },
+  {
+    "generation": 49,
+    "episodes": 1960,
+    "best_score": 360.3298156514498,
+    "success_rate": 0.0,
+    "clean_rate": 100.0,
+    "avg_speed": 0.3765747454521337,
+    "elapsed_s": 72.4
+  },
+  {
+    "generation": 50,
+    "episodes": 2000,
+    "best_score": 360.3298156514498,
+    "success_rate": 0.0,
+    "clean_rate": 100.0,
+    "avg_speed": 0.37681825374834066,
+    "elapsed_s": 74.4
+  }
+]

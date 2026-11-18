@@ -1,0 +1,244 @@
+Artefact Adopt AI - Hackathon Robot Humanoïde Défense
+menu
+Artefact Adopt AI
+Hackathon Robot Humanoïde Défense
+L’Agence de l'innovation de défense (AID) et Artefact Adopt AI, proposent aux meilleurs étudiants ingénieurs du secteur, de travailler pendant 3 jours sur des sujets de robot humanoïde défense.
+groups
+Équipes
+4 à 8 personnes
+share
+Partager
+Partager sur facebook
+Partager sur twitter
+Partager sur linkedin
+Partager sur yammer
+account_box
+Partager sur mail
+share
+Partager
+Partager sur facebook
+Partager sur twitter
+Partager sur linkedin
+Partager sur yammer
+account_box
+Partager sur mail
+Hackathon Robot Humanoïde Défense
+Traduire la page
+Français
+Français
+English
+Vous avez 3 options pour participer au Humanoid Robot Defense Hackathon.
+Choisissez celle qui correspond le mieux à votre équipe !
+Option 1 : Écosystème Innov8 & Unitree
+Durant la phase préparatoire, les étudiants écrivent
+du code en simulation
+: s’il est approuvé, ils pourront programmer les robots réels avec le soutien des experts d’Innov8.
+Matériel:
+Un nombre limité de robots physiques fournis au total sur site (
+Humanoïde G1 d'Unitree, mains Dex3-1, quadrupède Go2 d'Unitree
+).
+Option 2 : Simulation Wandercraft
+Concentrez-vous pleinement sur le contrôle dynamique et la marche bipède au sein du simulateur avancé développé par
+Wandercraft
+.
+Ce parcours se déroule
+entièrement en simulation.
+Option 3 : Apportez votre Propre Robot
+Vous avez la possibilité de participer au hackathon en
+apportant et en utilisant votre propre matériel robotique.
+Attention : Les consignes de sécurité et les détails pour l'acheminement de votre robot sur le site vous seront partagés très prochainement.
+Option 1 : Plongez dans l'Écosystème Innov8
+Si vous choisissez de travailler avec les méthodes et le matériel fourni par Innov8 le code que vous développez en simulation doit fonctionner sur le robot réel avec un minimum d'ajustements. Pour cela, nous mettons à votre disposition deux environnements de simulation, à choisir selon votre stratégie :
+MuJoCo
+: Idéal pour débuter et prototyper. Il est léger, rapide et reproduit fidèlement la communication avec le robot. C'est l'outil indispensable pour tous.
+NVIDIA Isaac Sim
+: L'outil de choix pour les projets d'IA. Utilisez-le pour l'entraînement de modèles (apprentissage par renforcement, imitation) et la génération de données synthétiques. Nécessite un PC puissant avec un GPU NVIDIA.
+Découvrez vos partenaires de jeu : Les robots Unitree
+Afin de garantir la sécurité des participants et l'intégrité du matériel mis à disposition, l'accès aux robots physiques (Unitree G1 et Unitree Go2) est soumis à une clause de validation stricte.
+Étape obligatoire de simulation
+: Aucun code ne pourra être déployé directement sur les robots réels sans une phase préalable de validation numérique.
+Processus de certification
+: Les équipes doivent obligatoirement exécuter et stabiliser leurs algorithmes sur l'environnement de simulation MuJoCo fourni.
+Validation par le jury technique
+: Le déploiement sur les plateformes physiques est conditionné par l'approbation formelle des experts et mentors d'Innov8, qui évalueront la viabilité et la sécurité du code sur simulateur avant d'autoriser les tests réels.
+Matériel de mise en situation et test
+Pour donner vie à votre projet, vous êtes libres de concevoir et d'importer les éléments spécifiques à votre scénario : bâtiments, terrains accidentés, obstacles ou objets à manipuler. Faites preuve de créativité pour construire un environnement de test qui mettra en valeur la performance de votre solution !
+Les contraintes logistiques et de sécurité plus précises imposées par le Grand Palais sont susceptibles d’évoluer et vous seront communiquées prochainement.
+Bases de données fournie par Innov8 : Ressources Techniques Essentielles
+1. Documentation officielle Unitree
+Unitree G1 (humanoïde)
+Guide développeur G1 (page d'entrée) :
+https://support.unitree.com/home/en/G1_developer
+Présentation du G1 (architecture, variantes) :
+https://support.unitree.com/home/en/G1_developer/about_G1
+Quick Start (mise en réseau, mode debug) :
+https://support.unitree.com/home/en/G1_developer/quick_start
+Quick Development (premier programme bas niveau) :
+https://support.unitree.com/home/en/G1_developer/quick_development
+Main dextre Dex3-1 :
+https://support.unitree.com/home/en/dex3-1_hand/about_dex3-1
+Main Inspire DFX (si cette option équipe nos robots) :
+https://support.unitree.com/home/en/G1_developer/inspire_dfx_dexterous_hand
+Unitree Go2 (quadrupède)
+Guide de développement SDK Go2 (page d'entrée) :
+https://support.unitree.com/home/en/developer
+Récupération du SDK et des modèles URDF/CAD :
+https://support.unitree.com/home/en/developer/Obtain%20SDK
+Quick Start (configuration réseau, premiers exemples) :
+https://support.unitree.com/home/en/developer/Quick_start
+Interface des services de mouvement haut niveau (Sports Services) :
+https://support.unitree.com/home/en/developer/sports_services
+Interface ROS 2 :
+https://support.unitree.com/home/en/developer/ROS2_service
+(lien repris d'une documentation tierce, le titre de la page n'a pas pu être vérifié : à contrôler)
+Services SLAM et navigation :
+https://support.unitree.com/home/en/developer/SLAM%20and%20Navigation_service
+Portail général
+:
+https://support.unitree.com/main
+.
+Organisation GitHub officielle
+:
+https://github.com/unitreerobotics
+2. Dépôts Git officiels
+github.com/unitreerobotics
+a) SDK et communication : G1 et Go2
+Dépôt
+Description
+Robots
+https://github.com/unitreerobotics/unitree_sdk2
+SDK C++ officiel basé sur CycloneDDS : état et contrôle haut et bas niveau du robot
+G1 + Go2
+https://github.com/unitreerobotics/unitree_sdk2_python
+Interface Python du SDK2, mêmes API et mêmes exemples que la version C++
+G1 + Go2
+https://github.com/unitreerobotics/unitree_ros2
+Messages et exemples ROS 2 (Foxy / Humble) qui dialoguent directement en DDS avec le robot, sans surcouche
+G1 + Go2
+À noter :
+le Go2 utilise les messages bas niveau
+unitree_go
+, le G1 les messages
+unitree_hg
+. Les exemples ne sont donc pas interchangeables tels quels entre les deux robots.
+b) Modèles de robots (URDF / MJCF / USD)
+Ressource
+Description
+Robots
+https://github.com/unitreerobotics/unitree_ros
+Descriptions URDF/xacro de toute la gamme Unitree (dossiers
+robots/g1_description
+, qui inclut aussi le MJCF MuJoCo, et
+robots/go2_description
+)
+G1 + Go2
+https://huggingface.co/datasets/unitreerobotics/unitree_model
+Modèles USD officiels pour Isaac Sim / Isaac Lab (dossiers G1, Go2, H1…), à télécharger avec Git LFS
+G1 + Go2
+c) Simulation
+Dépôt
+Description
+Robots
+https://github.com/unitreerobotics/unitree_mujoco
+Simulateur MuJoCo (C++ et Python) avec pont DDS : le même code tourne en simulation et sur le robot réel, générateur de terrains inclus
+G1 + Go2
+https://github.com/unitreerobotics/unitree_sim_isaaclab
+Environnements Isaac Lab (Isaac Sim 4.5 / 5.x) pour tâches de manipulation et collecte de données, compatibles avec xr_teleoperate
+G1 (et H1-2)
+d) Volet manipulation (bras / mains du G1)
+Dépôt
+Description
+Robots
+https://github.com/unitreerobotics/xr_teleoperate
+Téléopération bras + mains (Dex3-1, Dex1, Inspire) via casque XR (Apple Vision Pro, PICO 4 Ultra, Meta Quest 3), avec enregistrement de démonstrations, sur robot réel ou en simulation. Remplace l'ancien dépôt avp_teleoperate
+G1
+https://github.com/unitreerobotics/televuer
+Brique XR (suivi des mains / manettes) utilisée par xr_teleoperate
+G1
+https://github.com/unitreerobotics/unitree_IL_lerobot
+(redirige vers unitree_lerobot)
+Imitation learning basé sur LeRobot (Hugging Face) : conversion des données, entraînement, déploiement sur G1 + Dex1 / Dex3. Jeux de données d'exemple publiés sur Hugging Face
+G1
+https://huggingface.co/docs/lerobot/unitree_g1
+Documentation officielle LeRobot pour le G1 (intégration native, simulation MuJoCo)
+G1
+Chaîne type pour les équipes : simulation Isaac Lab (unitree_sim_isaaclab) → téléopération et collecte de démonstrations (xr_teleoperate) → entraînement d'une politique (unitree_lerobot) → test en simulation, puis sur robot réel pendant le hackathon.
+e) Volet locomotion / navigation
+Dépôt
+Description
+Robots
+https://github.com/unitreerobotics/unitree_rl_gym
+Apprentissage par renforcement de la locomotion (Isaac Gym, dérivé de legged_gym), chaîne Train → Play → Sim2Sim MuJoCo → Sim2Real, politiques pré-entraînées fournies
+G1 + Go2
+https://github.com/unitreerobotics/unitree_rl_lab
+Environnements RL sur Isaac Lab (suivi de vitesse Go2 / G1-29 ddl, imitation de mouvements G1) avec validation MuJoCo puis déploiement réel
+G1 + Go2
+https://github.com/unitreerobotics/unitree_rl_mjlab
+Alternative RL basée sur MuJoCo (mjlab), plus légère qu'Isaac
+G1 + Go2
+https://github.com/unitreerobotics/point_lio_unilidar
+SLAM LiDAR-inertiel (Point-LIO) adapté au LiDAR 4D L1 Unitree intégré au Go2
+Go2
+Côté Go2, la navigation officielle passe par les
+services SLAM et navigation Unitree
+(lien ci-dessus). La page Unitree « SLAM and navigation services » est explicite : « The SLAM navigation service interface only supports the EDU robot dogs with expansion dock and the official Unitree-purchased lidar (MID-360/XT16) versions », et ces services sont déployés sur le PC du dock (« The SLAM and navigation services are deployed in dock PC »). Ils demandent en outre un firmware récent.
+3. Simulateurs préconisés et modalités d'accès
+MuJoCo
+Accès
+: open source, gratuit, sans licence. Installation Python : pip install mujoco. Documentation :
+https://mujoco.readthedocs.io
+Matériel
+: fonctionne sur un PC portable standard (processeur x86-64 avec AVX), sans GPU NVIDIA obligatoire.
+Pourquoi
+: unitree_mujoco reproduit les mêmes échanges DDS que le robot réel, ce qui permet de préparer à distance du code directement transférable sur G1 et Go2 au Grand Palais. C'est aussi l'étape de validation « sim2sim » prévue par unitree_rl_gym et unitree_rl_lab.
+Checklist technique pour les étudiants
+Système et matériel
+☐
+PC sous
+Ubuntu 22.04 LTS
+(natif de préférence ; 20.04 accepté pour le SDK seul, déconseillé pour Isaac Sim). Windows / macOS : MuJoCo uniquement.
+☐
+Pour Isaac Sim / Isaac Lab : GPU NVIDIA RTX ≥ 8 Go de VRAM (16 Go conseillés), 32 Go de RAM, 50 Go libres, pilote NVIDIA à jour (
+nvidia-smi
+fonctionnel).
+☐
+Port Ethernet (ou adaptateur USB-Ethernet) pour la connexion filaire au robot sur site.
+Logiciels
+☐
+Git
++
+Git LFS
+(téléchargement des modèles USD), Miniconda / conda.
+☐ Python ≥ 3.8
+pour unitree_sdk2_python (dépendances listées sur la page PyPI de unitree-sdk2py : « Python >= 3.8 · cyclonedds == 0.10.2 · numpy · opencv-python »). Environnements séparés pour les outils qui imposent leur version (Python 3.10 pour unitree_lerobot, 3.11 pour Isaac Sim 5.x).
+☐ C++
+: CMake ≥ 3.10, gcc/g++, build-essential, libyaml-cpp, libeigen3, libboost, libspdlog, libfmt (prérequis de unitree_sdk2).
+☐ ROS 2 Humble
+(Ubuntu 22.04) avec
+rmw_cyclonedds_cpp
+(
+export RMW_IMPLEMENTATION=rmw_cyclonedds_cpp
+).
+☐ CycloneDDS 0.10.2
+(le README de unitree_ros2 précise : « The cyclonedds version of Unitree robot is 0.10.2 »). Attention aux conflits de version entre la CycloneDDS de ROS 2 et celle du SDK Python. Le même README avertit : « Before compiling cyclonedds, please ensure that ros2 environment has NOT been sourced when starting the terminal. Otherwise, it may cause errors in compilation. »
+☐ MuJoCo (
+pip install mujoco
+) et unitree_mujoco compilé, exemple Go2 et G1 lancé avec succès.
+Compétences et validation avant le 01/12
+☐ Avoir fait tourner un exemple unitree_sdk2 (C++ ou Python) contre le simulateur MuJoCo.
+☐ Comprendre la connexion réseau au robot : IP statique sur le sous-réseau 192.168.123.x, choix de l'interface réseau dans le code.
+☐ Parcours manipulation : téléopération G1 + Dex3 en simulation (xr_teleoperate + unitree_sim_isaaclab), conversion et entraînement avec unitree_lerobot.
+☐ Parcours locomotion / navigation : entraînement ou réutilisation d'une politique (unitree_rl_gym / unitree_rl_lab), validation sim2sim MuJoCo. Pour le Go2, notions ROS 2 Nav2 / SLAM.
+☐ Casque XR ( PICO 4 Ultra, Meta Quest 3) pour la manipulation.
+Plan du site
+Conditions d'utilisation
+Données personnelles
+Mentions légales
+Paramètres cookie
+Français
+English
+Français
+Deutsch
+Español
+Artefact Adopt AI -
+Opéré par Agorize

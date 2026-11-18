@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<title>Projet TALOS - Fiche Technique - Hackathon Robotique Défense</title>
+<style>
+  @page {
+    size: A4 portrait;
+    margin: 14mm 15mm 14mm 15mm;
+  }
+  * {
+    box-sizing: border-box;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+  body {
+    font-family: 'Helvetica Neue', Arial, sans-serif;
+    color: #111111;
+    background: #ffffff;
+    margin: 0;
+    padding: 0;
+    font-size: 9pt;
+    line-height: 1.35;
+  }
+  .page {
+    width: 100%;
+    min-height: 268mm;
+    max-height: 268mm;
+    page-break-after: always;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+  .page:last-child {
+    page-break-after: avoid;
+  }
+
+  /* Header technique */
+  .doc-header {
+    border-bottom: 1.5px solid #000000;
+    padding-bottom: 6px;
+    margin-bottom: 12px;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+  }
+  .doc-title {
+    font-size: 16pt;
+    font-weight: 800;
+    letter-spacing: -0.3px;
+    margin: 0;
+    text-transform: uppercase;
+  }
+  .doc-subtitle {
+    font-size: 8.5pt;
+    font-weight: 600;
+    color: #444444;
+    margin-top: 2px;
+  }
+  .doc-meta {
+    text-align: right;
+    font-size: 8pt;
+    font-family: 'Consolas', 'Courier New', monospace;
+    color: #222222;
+    line-height: 1.3;
+  }
+
+  /* Titres de section */
+  h2 {
+    font-size: 9.5pt;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    border-bottom: 1px solid #000000;
+    padding-bottom: 2px;
+    margin: 10px 0 6px 0;
+    color: #000000;
+  }
+
+  p {
+    margin: 0 0 6px 0;
+    text-align: justify;
+  }
+
+  /* Listes techniques */
+  ul {
+    margin: 0 0 6px 0;
+    padding-left: 14px;
+  }
+  li {
+    margin-bottom: 2px;
+  }
+
+  /* Tableaux sobres */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 6px 0;
+    font-size: 8.2pt;
+  }
+  th {
+    border-top: 1px solid #000000;
+    border-bottom: 1px solid #000000;
+    background: #f4f4f4;
+    text-align: left;
+    padding: 4px 6px;
+    font-weight: 700;
+    text-transform: uppercase;
+    font-size: 7.5pt;
+    letter-spacing: 0.3px;
+  }
+  td {
+    padding: 4px 6px;
+    border-bottom: 1px solid #e0e0e0;
+    vertical-align: top;
+  }
+  .mono {
+    font-family: 'Consolas', 'Courier New', monospace;
+    font-size: 7.8pt;
+  }
+
+  /* Schéma ASCII / Pipeline bloc */
+  .pipeline-box {
+    border: 1px solid #cccccc;
+    background: #fafafa;
+    padding: 6px 8px;
+    margin: 6px 0;
+    font-family: 'Consolas', monospace;
+    font-size: 7.5pt;
+    line-height: 1.4;
+    white-space: pre;
+  }
+
+  /* Footer */
+  .doc-footer {
+    border-top: 1px solid #cccccc;
+    padding-top: 4px;
+    font-size: 7.5pt;
+    color: #666666;
+    display: flex;
+    justify-content: space-between;
+    font-family: 'Consolas', monospace;
+  }
+  .bold { font-weight: 700; }
+</style>
+</head>
+<body>
+
+<!-- ==================== PAGE 1 ==================== -->
+<div class="page">
+  <div>
+    <div class="doc-header">
+      <div>
+        <div class="doc-title">Projet TALOS — Fiche Technique</div>
+        <div class="doc-subtitle">Navigation & Mobilité Bipède Autonome en Milieu Dégradé (GPS-Denied)</div>
+      </div>
+      <div class="doc-meta">
+        <div>HACKATHON ROBOTIQUE DÉFENSE 2026</div>
+        <div>TRACK 1 : MOBILITÉ & TERRAIN HOSTILE</div>
+        <div>ÉQUIPE TALOS [ID: 225] · ENSTA BRETAGNE</div>
+      </div>
+    </div>
+
+    <h2>1. Objectif Opérationnel & Spécifications du Défi</h2>
+    <p>
+      Le projet <strong>TALOS</strong> répond aux contraintes des théâtres d'intervention dégradés (brouillage électronique massif, effondrements, intérieurs non cartographiés). Il cible la combinaison des verrous techniques <strong>B</strong> (franchissement tout-terrain) et <strong>C</strong> (reconnaissance indoor rapide) sur le robot humanoïde <strong>Unitree G1</strong> :
+    </p>
+    <ul>
+      <li><strong>Contrainte GNSS :</strong> Fonctionnement 100% autonome sans GPS, balise externe ni cartographie préalable.</li>
+      <li><strong>Franchissement extérieur (Verrou B) :</strong> Progression sur sols accidentés (gravats, tranchées, pentes jusqu'à 30°) sur un parcours de 20 mètres avec maintien dynamique de l'équilibre.</li>
+      <li><strong>Reconnaissance intérieure (Verrou C) :</strong> Pénétration de bâtiment, passage de seuil/porte, détection et relevé photographique de 5 cibles en moins de 10 minutes.</li>
+    </ul>
+
+    <h2>2. Plateformes Cibles & Capteurs Embarqués</h2>
+    <p>
+      La solution est développée en priorité pour le <strong>robot humanoïde bipède Unitree G1</strong> (29 degrés de liberté), tout en assurant une portabilité immédiate sur le quadrupède <strong>Unitree Go2</strong> grâce à un socle logiciel commun :
+    </p>
+    <ul>
+      <li><strong>LiDAR 3D :</strong> Odométrie laser haute fréquence et reconstruction volumétrique du relief.</li>
+      <li><strong>Centrale Inertielle (IMU) :</strong> Estimation de l'attitude (Roll/Pitch/Yaw) et des accélérations linéaires à 100 Hz.</li>
+      <li><strong>Caméra de profondeur RGB-D :</strong> Détection rapprochée des obstacles négatifs (trous, marches) et identification visuelle des cibles d'intérêt.</li>
+    </ul>
+
+    <h2>3. Architecture Logicielle & Pipeline de Traitement</h2>
+    <p>
+      L'architecture repose sur <strong>ROS 2 Humble</strong> et le middleware <strong>CycloneDDS (v0.10.2)</strong>, organisée en 4 modules découplés :
+    </p>
+
+    <div class="pipeline-box">[LiDAR 3D + IMU] ──> (Point-LIO) ──────> [Odométrie 100 Hz] ──┐
+                                                                  ├──> [Nav2 BT Planner] ──> [Locomotion G1/Go2]
+[Caméra RGB-D]   ──> (GridMap 2.5D) ──> [Traversabilité]   ──┘           │
+                                                                   [Watchdog Failsafe]</div>
+
+    <table>
+      <thead>
+        <tr>
+          <th style="width: 25%;">Module</th>
+          <th style="width: 30%;">Technologie / Package</th>
+          <th style="width: 45%;">Fonction Technique</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>1. Odométrie & SLAM</strong></td>
+          <td class="mono">Point-LIO / unitree_ros2</td>
+          <td>Fusion LiDAR-Inertielle étroite. Estimation de pose robuste aux chocs et vibrations sans dérive cumulée.</td>
+        </tr>
+        <tr>
+          <td><strong>2. Traversabilité</strong></td>
+          <td class="mono">Elevation Mapping / GridMap</td>
+          <td>Génération d'une carte d'élévation 2.5D temps réel. Classification des zones : franchissable, pente critique, obstacle infranchissable.</td>
+        </tr>
+        <tr>
+          <td><strong>3. Planification</strong></td>
+          <td class="mono">Nav2 / BehaviorTree.CPP</td>
+          <td>Calcul de trajectoire 3D, évitement réactif et gestion de mission (recherche cibles, demi-tour d'urgence).</td>
+        </tr>
+        <tr>
+          <td><strong>4. Locomotion & Contrôle</strong></td>
+          <td class="mono">unitree_sdk2 / Low-level HG</td>
+          <td>Régulation des appuis au sol, adaptation de la garde au sol et déclenchement du repli sécurisé en cas de déséquilibre.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="doc-footer">
+    <span>TALOS — PROJET TECHNIQUE HACKATHON 2026</span>
+    <span>PAGE 1 / 2</span>
+  </div>
+</div>
+
+<!-- ==================== PAGE 2 ==================== -->
+<div class="page">
+  <div>
+    <div class="doc-header">
+      <div>
+        <div class="doc-title">Projet TALOS — Validation & Équipe</div>
+        <div class="doc-subtitle">Procédure de Test Sim2Real & Composition de l'Équipe ENSTA Bretagne</div>
+      </div>
+      <div class="doc-meta">
+        <div>ÉQUIPE TALOS [ID: 225]</div>
+        <div>DATE : OCTOBRE 2026</div>
+      </div>
+    </div>
+
+    <h2>4. Procédure de Validation Sécurisée (Sim2Real)</h2>
+    <p>
+      Pour respecter les exigences d'intégrité matérielle imposées par Innov8, l'accès au robot physique est conditionné par la validation des étapes suivantes :
+    </p>
+    <ul>
+      <li><strong>Étape 1 — Simulation MuJoCo (unitree_mujoco) :</strong> Validation du pipeline complet (DDS) en environnement physique simulé. Vérification de la stabilité de la marche et de la tenue des consignes de vitesse.</li>
+      <li><strong>Étape 2 — Franchissement de décombres virtuels :</strong> Génération procédurale de terrains à fortes pentes (20° à 30°) et débris pour éprouver la réactivité de l'élévation des pieds et de la planification locale.</li>
+      <li><strong>Étape 3 — Sécurité active & Failsafe :</strong> Implémentation d'un watchdog coupant immédiatement les couples moteurs ou déclenchant un accroupissement d'urgence si l'assiette du robot dépasse un angle seuil (Roll/Pitch &gt; 25°).</li>
+      <li><strong>Étape 4 — Déploiement physique sur site :</strong> Essais graduels au Grand Palais sous supervision des mentors Innov8 via connexion Ethernet filaire avant validation de l'autonomie complète.</li>
+    </ul>
+
+    <h2>5. Composition de l'Équipe & Répartition Technique</h2>
+    <p>
+      L'équipe TALOS est constituée d'élèves-ingénieurs de l'<strong>ENSTA Bretagne</strong> (école sous tutelle de la Direction Générale de l'Armement - DGA), spécialisés en systèmes embarqués, robotique mobile et automatique :
+    </p>
+
+    <table>
+      <thead>
+        <tr>
+          <th style="width: 25%;">Membre</th>
+          <th style="width: 25%;">Formation</th>
+          <th style="width: 25%;">Rôle TALOS</th>
+          <th style="width: 25%;">Périmètre Technique</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Mathis BEAUDUCEL</strong></td>
+          <td>ENSTA Bretagne (Alternant)</td>
+          <td>Coordinateur / Lead ROS 2</td>
+          <td>Architecture CycloneDDS, intégration système, drivers capteurs.</td>
+        </tr>
+        <tr>
+          <td><strong>Yurii KHARKIVSKYI</strong></td>
+          <td>ENSTA Bretagne (Robotique)</td>
+          <td>Perception & SLAM</td>
+          <td>Implémentation Point-LIO, calibration LiDAR/IMU, nuages de points.</td>
+        </tr>
+        <tr>
+          <td><strong>Ayoub OUZANI</strong></td>
+          <td>ENSTA Bretagne (Systèmes)</td>
+          <td>Navigation & Traversabilité</td>
+          <td>Elevation Mapping, arbres de comportement Nav2, évitement.</td>
+        </tr>
+        <tr>
+          <td><strong>Mamadou Alpha DIALLO</strong></td>
+          <td>ENSTA Bretagne (Automatique)</td>
+          <td>Locomotion & MuJoCo</td>
+          <td>Simulation physique, cinématique inverse, lois de stabilité.</td>
+        </tr>
+        <tr>
+          <td><strong>Arlann LAUNAY</strong></td>
+          <td>ENSTA Bretagne (Informatique)</td>
+          <td>Vision & Détection</td>
+          <td>Traitement RGB-D, classification de cibles, supervision mission.</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h2>6. Calendrier Préparatoire (Octobre – Décembre 2026)</h2>
+    <table>
+      <thead>
+        <tr>
+          <th style="width: 20%;">Période</th>
+          <th style="width: 40%;">Livrable Technique</th>
+          <th style="width: 40%;">Critère de Validation</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>12 – 31 Octobre</strong></td>
+          <td>Stack ROS 2 / MuJoCo opérationnel sous Ubuntu 22.04.</td>
+          <td>Odométrie Point-LIO fonctionnelle en simulation sur modèle G1.</td>
+        </tr>
+        <tr>
+          <td><strong>Novembre</strong></td>
+          <td>Couplage Traversabilité + Nav2 sur terrain accidenté simulé.</td>
+          <td>Parcours de 20 m avec franchissement de décombres validé sous MuJoCo.</td>
+        </tr>
+        <tr>
+          <td><strong>2 – 4 Décembre</strong></td>
+          <td>Épreuves finales au Grand Palais (Adopt AI).</td>
+          <td>Certification Innov8 et démonstration autonome devant le jury AID.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="doc-footer">
+    <span>TALOS — PROJET TECHNIQUE HACKATHON 2026</span>
+    <span>PAGE 2 / 2</span>
+  </div>
+</div>
+
+</body>
+</html>

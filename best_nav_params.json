@@ -1,0 +1,14 @@
+{
+  "max_vx": 0.8,
+  "lookahead_dist": 2.32,
+  "corridor_radius": 0.35,
+  "max_vy": 0.364,
+  "accel_rate": 0.0472,
+  "yaw_gain": 0.846,
+  "safety_margin": 0.039,
+  "best_score": 360.33,
+  "avg_speed": 0.378,
+  "contacts": 0,
+  "success": false,
+  "episodes_total": 1920
+}

@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<title>TALOS - Executive Deck - Hackathon Robotique Défense</title>
+<style>
+  @page {
+    size: 297mm 210mm landscape;
+    margin: 8mm 10mm 8mm 10mm;
+  }
+  * {
+    box-sizing: border-box;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    color: #0f172a;
+    background: #ffffff;
+    margin: 0;
+    padding: 0;
+    font-size: 8.5pt;
+    line-height: 1.3;
+  }
+  .slide {
+    width: 277mm;
+    height: 194mm;
+    max-height: 194mm;
+    page-break-after: always;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    position: relative;
+    padding: 2mm 0;
+  }
+  .slide:last-child {
+    page-break-after: avoid;
+  }
+
+  /* Top Bar */
+  .slide-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 2px solid #0f172a;
+    padding-bottom: 4px;
+    margin-bottom: 8px;
+  }
+  .slide-title-group h1 {
+    font-size: 18pt;
+    margin: 0;
+    font-weight: 900;
+    letter-spacing: -0.5px;
+    display: inline-block;
+    color: #0f172a;
+  }
+  .slide-title-group .track-tag {
+    font-size: 9pt;
+    font-weight: 700;
+    color: #0284c7;
+    margin-left: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  .slide-meta {
+    text-align: right;
+    font-size: 7.5pt;
+    font-family: 'Consolas', monospace;
+    color: #334155;
+  }
+  .tag {
+    background: #0f172a;
+    color: #fff;
+    padding: 2px 6px;
+    border-radius: 2px;
+    font-weight: 700;
+  }
+  .tag-dga {
+    background: #0f766e;
+    color: #fff;
+    padding: 2px 6px;
+    border-radius: 2px;
+    font-weight: 700;
+  }
+
+  /* Layout Grids */
+  .grid-3 {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 8px;
+  }
+  .grid-2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+  }
+  .grid-23 {
+    display: grid;
+    grid-template-columns: 1fr 1.3fr;
+    gap: 8px;
+  }
+  .grid-32 {
+    display: grid;
+    grid-template-columns: 1.2fr 0.8fr;
+    gap: 8px;
+  }
+
+  /* Panels */
+  .panel {
+    border: 1px solid #cbd5e1;
+    border-radius: 3px;
+    padding: 7px 9px;
+    background: #ffffff;
+  }
+  .panel-dark {
+    background: #f8fafc;
+    border-color: #94a3b8;
+  }
+  .panel-header {
+    font-size: 8.5pt;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+    margin-bottom: 5px;
+    color: #0f172a;
+    border-bottom: 1px solid #e2e8f0;
+    padding-bottom: 3px;
+    display: flex;
+    justify-content: space-between;
+  }
+
+  /* KPI boxes */
+  .kpi-row {
+    display: flex;
+    gap: 6px;
+    margin-bottom: 6px;
+  }
+  .kpi-box {
+    flex: 1;
+    background: #f1f5f9;
+    border-left: 2.5px solid #0284c7;
+    padding: 4px 6px;
+  }
+  .kpi-val {
+    font-size: 11pt;
+    font-weight: 800;
+    color: #0f172a;
+    font-family: 'Consolas', monospace;
+  }
+  .kpi-lbl {
+    font-size: 6.8pt;
+    text-transform: uppercase;
+    color: #475569;
+    font-weight: 700;
+  }
+
+  /* Code / Pipeline Box */
+  .ascii-box {
+    font-family: 'Consolas', monospace;
+    font-size: 7.2pt;
+    background: #f8fafc;
+    border: 1px dashed #94a3b8;
+    padding: 5px 8px;
+    line-height: 1.35;
+    white-space: pre;
+    margin: 4px 0;
+  }
+
+  /* Tables */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 7.6pt;
+  }
+  th {
+    background: #0f172a;
+    color: #ffffff;
+    text-align: left;
+    padding: 3px 5px;
+    font-size: 7pt;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+  }
+  td {
+    padding: 3.5px 5px;
+    border-bottom: 1px solid #e2e8f0;
+    vertical-align: top;
+  }
+  tr:nth-child(even) { background: #f8fafc; }
+  .mono { font-family: 'Consolas', monospace; font-size: 7.2pt; }
+
+  /* Footer */
+  .slide-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-top: 1px solid #cbd5e1;
+    padding-top: 3px;
+    font-size: 7pt;
+    color: #64748b;
+    font-family: 'Consolas', monospace;
+  }
+</style>
+</head>
+<body>
+
+<!-- ==================== SLIDE 1 ==================== -->
+<div class="slide">
+  <div>
+    <div class="slide-header">
+      <div class="slide-title-group">
+        <h1>TALOS</h1>
+        <span class="track-tag">Track 1 : Navigation & Mobilité en Terrain Hostile</span>
+      </div>
+      <div class="slide-meta">
+        <span class="tag">ÉQUIPE TALOS #225</span> <span class="tag-dga">ENSTA BRETAGNE · DGA</span> · GRAND PALAIS 2026
+      </div>
+    </div>
+
+    <!-- KPI Row -->
+    <div class="kpi-row">
+      <div class="kpi-box">
+        <div class="kpi-val">100% SANS GPS</div>
+        <div class="kpi-lbl">Milieu brouillé & fermé (GPS-denied)</div>
+      </div>
+      <div class="kpi-box">
+        <div class="kpi-val">20 M / PENTES 30°</div>
+        <div class="kpi-lbl">Franchissement sols dégradés & tranchées</div>
+      </div>
+      <div class="kpi-box">
+        <div class="kpi-val">&lt; 10 MIN</div>
+        <div class="kpi-lbl">Reconnaissance de 5 cibles en bâtiment inconnu</div>
+      </div>
+      <div class="kpi-box">
+        <div class="kpi-val">100 HZ IMU</div>
+        <div class="kpi-lbl">Odométrie temps réel LiDAR 3D + Point-LIO</div>
+      </div>
+      <div class="kpi-box">
+        <div class="kpi-val">SIM2REAL VALITÉ</div>
+        <div class="kpi-lbl">MuJoCo + CycloneDDS v0.10.2 avant test réel</div>
+      </div>
+    </div>
+
+    <!-- Main Content Slide 1 -->
+    <div class="grid-23">
+      <!-- Left: CONOPS Mission -->
+      <div class="panel">
+        <div class="panel-header">1. Concept d'Opération (CONOPS) — Verrous B & C</div>
+        <p style="margin:0 0 5px 0; font-size:7.8pt;">
+          <strong>Le problème opérationnel :</strong> En zone hostile de combat ou catastrophe NRBC, le signal satellite est <strong>systématiquement brouillé</strong> et les accès sont encombrés de décombres et de sas étroits.
+        </p>
+        <div class="panel panel-dark" style="padding:5px 7px; margin-bottom:5px;">
+          <div style="font-weight:700; font-size:7.6pt; margin-bottom:3px; color:#0f172a;">Scénario Tactique de Référence :</div>
+          <div style="font-size:7.4pt; line-height:1.35;">
+            <strong>Phase 1 (Extérieur) :</strong> Progression autonome sans GPS sur 20 m de gravats, tranchées et dévers à 30°.<br>
+            <strong>Phase 2 (Brèche/Seuil) :</strong> Détection et franchissement d'un passage de porte avec morphologie bipède.<br>
+            <strong>Phase 3 (Indoor) :</strong> Cartographie volumétrique 3D et détection/photo de 5 cibles en &lt;10 min (appui EOD).
+          </div>
+        </div>
+        <p style="margin:0; font-size:7.6pt;">
+          <strong>Plateforme prioritaire :</strong> Robot humanoïde <strong>Unitree G1</strong> (29 DDL, LiDAR 3D, caméra RGB-D), avec portabilité immédiate du stack sur quadrupède <strong>Unitree Go2</strong>.
+        </p>
+      </div>
+
+      <!-- Right: Technical Architecture -->
+      <div class="panel">
+        <div class="panel-header">2. Pipeline Logiciel Modulaire & Flux de Données (ROS 2 Humble)</div>
+        
+        <div class="ascii-box">[LiDAR 3D + IMU] ──> Point-LIO (100 Hz)  ──> [Pose & Odométrie 3D] ──┐
+                                                                     ├──> [Nav2 BT] ──> [Locomotion G1/Go2]
+[Caméra RGB-D]   ──> GridMap 2.5D        ──> [Traversabilité Sols] ──┘         │
+                                                                       [Watchdog Failsafe &gt;25°]</div>
+
+        <table>
+          <thead>
+            <tr>
+              <th style="width: 20%;">Brique</th>
+              <th style="width: 32%;">Package & Technologie</th>
+              <th style="width: 48%;">Rôle Technique</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Perception</strong></td>
+              <td class="mono">Point-LIO / unitree_ros2</td>
+              <td>Odométrie laser-inertielle robuste aux chocs sans dérive cumulée.</td>
+            </tr>
+            <tr>
+              <td><strong>Traversabilité</strong></td>
+              <td class="mono">Elevation Mapping / GridMap</td>
+              <td>Classification continue : sol praticable vs pentes critiques / crevasses.</td>
+            </tr>
+            <tr>
+              <td><strong>Planification</strong></td>
+              <td class="mono">Nav2 / BehaviorTree.CPP</td>
+              <td>Calcul de trajectoires 3D, replanification réactive, exploration cibles.</td>
+            </tr>
+            <tr>
+              <td><strong>Locomotion</strong></td>
+              <td class="mono">unitree_sdk2 / CycloneDDS</td>
+              <td>Contrôle adaptatif des appuis et watchdog anti-chute (Roll/Pitch &gt; 25°).</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <div class="slide-footer">
+    <span>TALOS // NOTE TECHNIQUE CADRAGE</span>
+    <span>SLIDE 1 SUR 2 — CONCEPT D'OPÉRATION & ARCHITECTURE SYSTÈME</span>
+    <span>HACKATHON ROBOTIQUE DÉFENSE 2026</span>
+  </div>
+</div>
+
+<!-- ==================== SLIDE 2 ==================== -->
+<div class="slide">
+  <div>
+    <div class="slide-header">
+      <div class="slide-title-group">
+        <h1>TALOS</h1>
+        <span class="track-tag">Validation Sim2Real, Équipe ENSTA Bretagne & Planning</span>
+      </div>
+      <div class="slide-meta">
+        <span class="tag">ÉQUIPE TALOS #225</span> <span class="tag-dga">SOUS TUTELLE DGA</span> · GRAND PALAIS 2026
+      </div>
+    </div>
+
+    <!-- Main Content Slide 2 -->
+    <div class="grid-2">
+      <!-- Left: Sim2Real & Safety Protocol -->
+      <div class="panel">
+        <div class="panel-header">3. Protocole Sécurisé Sim2Real (Validation Innov8 / AID)</div>
+        <p style="margin:0 0 5px 0; font-size:7.8pt;">
+          Pour respecter la clause stricte de protection du matériel physique sur site, aucun algorithme n'est déployé sans certification préalable en simulation numérique :
+        </p>
+
+        <div style="display:flex; flex-direction:column; gap:4px;">
+          <div class="panel panel-dark" style="padding:4px 6px;">
+            <strong style="color:#0f172a; font-size:7.5pt;">1. Validation Numérique MuJoCo (unitree_mujoco)</strong><br>
+            <span style="font-size:7.3pt;">Même pont réseau CycloneDDS v0.10.2 qu'en réel. Validation de la stabilité d'allure et de la boucle odométrique fermée.</span>
+          </div>
+          <div class="panel panel-dark" style="padding:4px 6px;">
+            <strong style="color:#0f172a; font-size:7.5pt;">2. Entraînement Pentes 30° & Décombres (Isaac Lab / RL Gym)</strong><br>
+            <span style="font-size:7.3pt;">Génération procédurale de gravats et tranchées pour éprouver la dynamique de redressement et l'élévation des pieds.</span>
+          </div>
+          <div class="panel panel-dark" style="padding:4px 6px;">
+            <strong style="color:#0f172a; font-size:7.5pt;">3. Sécurité Active Failsafe (Zéro casse matériel)</strong><br>
+            <span style="font-size:7.3pt;">Watchdog IMU temps réel : coupure moteur immédiate et posture d'amortissement si déséquilibre critique détecté.</span>
+          </div>
+          <div class="panel panel-dark" style="padding:4px 6px;">
+            <strong style="color:#0f172a; font-size:7.5pt;">4. Déploiement Progressif sur Site (Grand Palais)</strong><br>
+            <span style="font-size:7.3pt;">Tests supervisés en liaison filaire Ethernet avec les mentors d'Innov8 avant validation du mode 100% autonome.</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right: Team & Planning -->
+      <div style="display:flex; flex-direction:column; gap:8px;">
+        <!-- Team Panel -->
+        <div class="panel">
+          <div class="panel-header">4. L'Équipe ENSTA Bretagne (Sous Tutelle DGA)</div>
+          <p style="margin:0 0 4px 0; font-size:7.6pt;">
+            Élèves-ingénieurs et alternants formés au pôle d'excellence en <strong>Robotique Autonome & Systèmes Embarqués</strong> de l'ENSTA Bretagne :
+          </p>
+          <table>
+            <thead>
+              <tr>
+                <th style="width: 28%;">Membre</th>
+                <th style="width: 32%;">Rôle Projet</th>
+                <th style="width: 40%;">Compétences Clés</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>Mathis BEAUDUCEL</strong></td>
+                <td>Coordinateur / Lead ROS 2</td>
+                <td>Architecture DDS, Linux RT, intégration drivers</td>
+              </tr>
+              <tr>
+                <td><strong>Yurii KHARKIVSKYI</strong></td>
+                <td>Perception & SLAM</td>
+                <td>Point-LIO, nuages de points 3D, fusion IMU</td>
+              </tr>
+              <tr>
+                <td><strong>Ayoub OUZANI</strong></td>
+                <td>Navigation & Traversabilité</td>
+                <td>Elevation Map, arbres de décision Nav2</td>
+              </tr>
+              <tr>
+                <td><strong>Mamadou Alpha DIALLO</strong></td>
+                <td>Locomotion & MuJoCo</td>
+                <td>Dynamique de marche, simulation physique</td>
+              </tr>
+              <tr>
+                <td><strong>Arlann LAUNAY</strong></td>
+                <td>Vision & Détection</td>
+                <td>RGB-D, classification cibles, suivi mission</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Roadmap Panel -->
+        <div class="panel">
+          <div class="panel-header">5. Roadmap Technique vers le Grand Palais</div>
+          <table>
+            <thead>
+              <tr>
+                <th style="width: 25%;">Jalon</th>
+                <th style="width: 45%;">Livrable Technique</th>
+                <th style="width: 30%;">Critère Validation</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>12 – 31 Octobre</strong></td>
+                <td>Environnement MuJoCo / ROS 2 configuré sous Ubuntu 22.04</td>
+                <td>Odométrie Point-LIO validée</td>
+              </tr>
+              <tr>
+                <td><strong>Novembre</strong></td>
+                <td>Couplage Traversabilité + Nav2 sur parcours dégradé simulé</td>
+                <td>Parcours 20 m réussi sous MuJoCo</td>
+              </tr>
+              <tr>
+                <td><strong>2 – 4 Décembre</strong></td>
+                <td>Certification Innov8 & Sprint Grand Palais (Adopt AI)</td>
+                <td>Démo autonome devant jury AID</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="slide-footer">
+    <span>TALOS // NOTE TECHNIQUE CADRAGE</span>
+    <span>SLIDE 2 SUR 2 — PROCÉDURE SIM2REAL, ÉQUIPE ENSTA BRETAGNE & ROADMAP</span>
+    <span>HACKATHON ROBOTIQUE DÉFENSE 2026</span>
+  </div>
+</div>
+
+</body>
+</html>
