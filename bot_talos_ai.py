@@ -194,12 +194,29 @@ def create_client(with_message_content=True):
         is_mentioned = c.user in message.mentions
         is_dm = isinstance(message.channel, discord.DMChannel)
 
-        # Si message_content n'est pas activé côté Discord, le bot réagit quand il est mentionné ou en DM
         if not (is_mistral or is_gemini or is_mentioned or is_dm):
             return
 
         clean_content = message.clean_content.replace(f"@{c.user.name}", "").strip()
+
+        # Si le bot reçoit un message dans #mistral-ai ou #gemini-ai mais que le contenu est vide
+        # c'est que Discord masque le texte car le "Message Content Intent" n'est pas encore coché sur le portail
         if not clean_content:
+            if is_mistral or is_gemini:
+                embed_hint = discord.Embed(
+                    title="👋 Pour me poser une question :",
+                    description=(
+                        "Pour que je puisse lire ton message, deux solutions :\n\n"
+                        "1. **Option rapide :** Mentionne-moi dans ton message, par exemple :\n"
+                        f"   > `@{c.user.name} allo ?`\n\n"
+                        "2. **Option permanente (sans avoir besoin de mentionner) :**\n"
+                        "   Active le **`Message Content Intent`** en 1 clic sur le portail Discord :\n"
+                        "   👉 **[Activer sur Discord Developer Portal](https://discord.com/developers/applications/1572732425526706276/bot)**\n"
+                        "   *(Descends à 'Privileged Gateway Intents' -> coche 'Message Content Intent' -> Save Changes)*."
+                    ),
+                    color=discord.Color.from_rgb(255, 180, 0)
+                )
+                await message.reply(embed=embed_hint)
             return
 
         # Choisir le moteur IA selon le salon
@@ -209,7 +226,7 @@ def create_client(with_message_content=True):
         elif is_mistral:
             ai_engine = "mistral"
         elif is_mentioned or is_dm:
-            ai_engine = "mistral"  # Mistral Pro par défaut
+            ai_engine = "mistral"
 
         cid = message.channel.id
         if cid not in conversations:
@@ -220,6 +237,18 @@ def create_client(with_message_content=True):
         if len(conversations[cid]) > (MAX_HISTORY * 2 + 1):
             conversations[cid] = [conversations[cid][0]] + conversations[cid][-(MAX_HISTORY * 2):]
 
+        # 1. ENCADRÉ "EN COURS DE TRAITEMENT" IMMÉDIAT
+        engine_display = "Mistral Large (Pro)" if ai_engine == "mistral" else "Google Gemini 2.5"
+        embed_loading = discord.Embed(
+            title=f"⏳ {engine_display} — Réflexion en cours...",
+            description="Recherche dans la base de connaissances TALOS et génération de la réponse...",
+            color=discord.Color.from_rgb(255, 112, 0) if ai_engine == "mistral" else discord.Color.from_rgb(66, 133, 244)
+        )
+        embed_loading.set_footer(text="TALOS Autonomous Defense Bot • Traitement en cours...")
+        
+        loading_msg = await message.reply(embed=embed_loading)
+
+        # 2. APPEL API & ÉDITION AVEC LA RÉPONSE
         async with message.channel.typing():
             try:
                 if ai_engine == "mistral":
@@ -230,15 +259,21 @@ def create_client(with_message_content=True):
                 conversations[cid].append({"role": "assistant", "content": answer})
 
                 chunks = split_message(answer)
-                for idx, chunk in enumerate(chunks):
-                    if idx == 0:
-                        await message.reply(chunk)
-                    else:
-                        await message.channel.send(chunk)
+                # On remplace l'encadré de chargement par la réponse finale
+                await loading_msg.edit(content=chunks[0], embed=None)
+
+                # Si la réponse fait plus de 2000 caractères, on envoie le reste
+                for extra_chunk in chunks[1:]:
+                    await message.channel.send(extra_chunk)
 
             except Exception as e:
                 print(f"[-] Erreur {ai_engine} : {e}", flush=True)
-                await message.reply(f"❌ **Erreur ({ai_engine.capitalize()})** : `{e}`")
+                err_embed = discord.Embed(
+                    title="❌ Erreur de génération",
+                    description=f"`{e}`",
+                    color=discord.Color.red()
+                )
+                await loading_msg.edit(embed=err_embed)
 
     return c
 
