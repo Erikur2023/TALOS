@@ -630,7 +630,7 @@ async function renderBench() {
   if (B.nav_robots) {
     sec('Robots comparés — missions complètes sous MuJoCo', 'graines 100–115, recalage LiDAR 2D, dépôt à la tranchée ; relief ×1,0 = relief réel du monde, ×0,4 = atténué');
     const g = grid(), K = Object.keys(B.nav_robots), V = K.map(k => B.nav_robots[k]);
-    const EXTL = { unitree_mjlab: 'G1 29 ddl (Unitree officiel)', gr00t_wbc: 'G1 29 ddl (NVIDIA GR00T)' };
+    const EXTL = { unitree_mjlab: 'G1 29 ddl (Unitree officiel)', gr00t_wbc: 'G1 29 ddl (NVIDIA GR00T)', isaac_go1_rough: 'Go1 (NVIDIA Isaac Lab, terrain accidenté)' };
     const lab = (k, v) => EXTL[v.robot] ? `${EXTL[v.robot]} · relief ×${v.relief}` : `${v.robot === 'go1' ? 'Go1' : 'G1'} ${v.policy ? '(' + (v.policy.includes('sol_plat') ? 'plat' : 'terrain UA') + ')' : '(Unitree 12 ddl, plat)'} · relief ×${v.relief}`;
     successChart(pane(g, 'MISSIONS RÉUSSIES'), K.map((k, i) => lab(k, V[i])), V.map(v => v.success), V.map(v => v.n));
     chartOn(pane(g, 'CHUTES ET DURÉE MÉDIANE'), { type: 'bar', data: { labels: K.map((k, i) => lab(k, V[i])), datasets: [{ label: 'chutes', data: V.map(v => v.falls), backgroundColor: PAL[3] + 'cc' }, { label: 'durée médiane (s)', data: V.map(v => v.time_median_s), backgroundColor: PAL[0] + '88', yAxisID: 'y2' }] }, options: { scales: { y: { min: 0, title: { display: true, text: 'chutes' } }, y2: { position: 'right', min: 0, grid: { display: false }, title: { display: true, text: 's' } } } } });

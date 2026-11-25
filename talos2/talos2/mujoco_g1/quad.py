@@ -207,6 +207,7 @@ class ExtMission(QuadMission):
         self.rng = np.random.default_rng(40_000 + seed)
         self.imu = ImuOdometry(p, seed)
         w = self.w
+        self.key = key
         spec_fn, Walker = E.REGISTRY[key]
         corridor = Planner(self.prior, p).plan(w.start, w.goal)
         self.m, self.info = S.build(w, np.vstack([w.start, corridor, w.goal]), robot_spec=spec_fn(payload_kg))
@@ -228,4 +229,6 @@ class ExtMission(QuadMission):
             self.walker.control_step(self.m, d, [0, 0, 0])
 
     def scan2d(self):
+        if self.key.startswith("isaac_go1"):
+            return QuadMission.scan2d(self)
         return G1Mission.scan2d(self)

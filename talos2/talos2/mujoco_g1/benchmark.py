@@ -50,7 +50,7 @@ def main():
     ap.add_argument("--mode", default="lidar2d", choices=["lidar2d", "lidar3d", "osm"])
     ap.add_argument("--no-dr", action="store_true", help="ne pas lancer la reference odometrie seule")
     ap.add_argument("--procs", type=int, default=12)
-    ap.add_argument("--robot", default="g1", choices=["g1", "go1", "unitree_mjlab", "gr00t_wbc"])
+    ap.add_argument("--robot", default="g1", choices=["g1", "go1", "unitree_mjlab", "gr00t_wbc", "isaac_go1_rough"])
     ap.add_argument("--policy", default=None, help="politique Go1 (results/rl/<run>/policy.npz)")
     ap.add_argument("--out", default="results/mujoco")
     a = ap.parse_args()

@@ -141,8 +141,8 @@ def run(seed, matching=True, p=None, relief_scale=1.0, viewer=False, realtime=Fa
         max_time=None, verbose=False, nav_factory=None, scan_fn=None, slope_fn=None, map_kind="trees", delivery=False,
         robot="g1"):
     if p is None:
-        p = mujoco_params(**({"plan_slope_max": 0.35} if robot == "go1" else {}))
-    if robot in ("unitree_mjlab", "gr00t_wbc"):
+        p = mujoco_params(**({"plan_slope_max": 0.35} if robot in ("go1", "isaac_go1_rough") else {}))
+    if robot in ("unitree_mjlab", "gr00t_wbc", "isaac_go1_rough"):
         from .quad import ExtMission
         Mission = lambda *aa, **kk: ExtMission(*aa, key=robot, **kk)
     elif robot == "go1":

@@ -39,6 +39,8 @@ def available():
         out.append("unitree_mjlab")
     if os.path.exists(os.path.join(GR00T, "policy", "GR00T-WholeBodyControl-Walk.onnx")):
         out.append("gr00t_wbc")
+    if os.path.exists(os.path.join(EXT, "isaaclab", "go1_rough_actor.npz")):
+        out.append("isaac_go1_rough")
     return out
 
 
@@ -160,4 +162,90 @@ class Gr00tWalker:
         return float(-_grav(d.qpos[3:7])[2])
 
 
-REGISTRY = {"unitree_mjlab": (unitree_spec, UnitreeMjlabWalker), "gr00t_wbc": (gr00t_spec, Gr00tWalker)}
+# ------------------------------------------------------------------ NVIDIA Isaac Lab, Go1 terrain accidente (perceptif)
+ISAAC_GO1 = os.path.join(EXT, "isaaclab", "go1_rough_actor.npz")
+ISAAC_ORDER = ["FL_hip", "FR_hip", "RL_hip", "RR_hip", "FL_thigh", "FR_thigh", "RL_thigh", "RR_thigh",
+               "FL_calf", "FR_calf", "RL_calf", "RR_calf"]
+
+
+def isaac_go1_spec(payload_kg=3.0):
+    from . import quad
+    spec = quad.robot_spec(payload_kg)
+    spec.option.timestep = PHYS_DT
+    return spec
+
+
+class IsaacGo1Walker:
+    """Isaac-Velocity-Rough-Unitree-Go1-v0 (poids officiels NVIDIA Isaac Lab, rsl_rl, BSD-3). Obs 235 = vitesse lineaire,
+    gyro, gravite, consigne, angles - defaut, vitesses, derniere action, carte de hauteurs 17 x 11 (1,6 x 1,0 m, pas 0,1 m,
+    hauteur du tronc - sol - 0,5, bornee +-1). Action x 0,25 + pose de repos. LIMITE : le reseau d'actionneurs Go1
+    (TorchScript, non charge pour raison de securite) est remplace par un PD Kp 25 / Kd 0,5 borne aux couples moteurs."""
+    label = "Go1 — NVIDIA Isaac Lab terrain accidenté (pré-entraîné)"
+
+    def __init__(self, m):
+        z = np.load(ISAAC_GO1)
+        self.W = [(z["actor_%d_weight" % i].T, z["actor_%d_bias" % i]) for i in (0, 2, 4, 6)]
+        names = [m.joint(j).name for j in range(1, 13)]
+        base = [n.replace("_joint", "") for n in names]
+        self.idx = np.array([base.index(n) for n in ISAAC_ORDER])     # ordre Isaac -> indice MuJoCo
+        def q0(n):
+            if n.endswith("hip"):
+                return 0.1 if n[1] == "L" else -0.1
+            if n.endswith("thigh"):
+                return 0.8 if n[0] == "F" else 1.0
+            return -1.5
+        self.q0 = np.array([q0(n) for n in ISAAC_ORDER])
+        self.tmax = np.array([35.55 if "calf" in n else 23.7 for n in ISAAC_ORDER])
+        self.kp, self.kd = 25.0, 0.5
+        self.trunk = m.body("trunk").id
+        m.dof_damping[6:18] = 0.0
+        m.actuator_gainprm[:, 0] = 0; m.actuator_biasprm[:, :3] = 0      # couples imposes directement
+        gx = np.arange(-0.8, 0.8 + 1e-9, 0.1); gy = np.arange(-0.5, 0.5 + 1e-9, 0.1)
+        X, Y = np.meshgrid(gx, gy)                                         # x varie le plus vite (ordre 'xy')
+        self.grid = np.c_[X.ravel(), Y.ravel()]
+        self.ggroup = np.array([1, 0, 1, 1, 1, 0], np.uint8)               # sol/obstacles, pas le robot
+        self.home_z = 0.30
+        self.act = np.zeros(12); self.target = self.q0.copy()
+
+    def reset(self, d):
+        d.qpos[7 + self.idx] = self.q0; d.qvel[:] = 0
+        self.act[:] = 0; self.target = self.q0.copy()
+
+    def _mlp(self, x):
+        for i, (W, b) in enumerate(self.W):
+            x = x @ W + b
+            if i < 3:
+                x = np.where(x > 0, x, np.exp(np.minimum(x, 0)) - 1)    # ELU
+        return x
+
+    def _scan(self, m, d):
+        p = d.xpos[self.trunk]; R = d.xmat[self.trunk].reshape(3, 3)
+        yaw = np.arctan2(R[1, 0], R[0, 0]); c, s = np.cos(yaw), np.sin(yaw)
+        out = np.empty(len(self.grid)); gid = np.zeros(1, np.int32)
+        for k, (gx, gy) in enumerate(self.grid):
+            o = np.array([p[0] + c * gx - s * gy, p[1] + s * gx + c * gy, p[2] + 20.0])
+            dist = mujoco.mj_ray(m, d, o, np.array([0, 0, -1.0]), self.ggroup, 1, -1, gid)
+            hz = o[2] - dist if dist >= 0 else p[2] - 1.5
+            out[k] = p[2] - hz - 0.5
+        return np.clip(out, -1, 1)
+
+    def control_step(self, m, d, cmd):
+        R = d.xmat[self.trunk].reshape(3, 3)
+        q = d.qpos[7 + self.idx]; dq = d.qvel[6 + self.idx]
+        obs = np.concatenate([R.T @ d.qvel[0:3], d.qvel[3:6], R.T @ np.array([0, 0, -1.0]),
+                              np.asarray(cmd, float), q - self.q0, dq, self.act, self._scan(m, d)])
+        self.act = self._mlp(obs)
+        self.target = self.q0 + 0.25 * self.act
+        for _ in range(int(round(CTRL_DT / PHYS_DT))):
+            q = d.qpos[7 + self.idx]; dq = d.qvel[6 + self.idx]
+            tau = np.clip(self.kp * (self.target - q) - self.kd * dq, -self.tmax, self.tmax)
+            d.ctrl[self.idx] = 0
+            d.qfrc_applied[6 + self.idx] = tau
+            mujoco.mj_step(m, d)
+
+    def upright(self, d):
+        return float(d.xmat[self.trunk].reshape(3, 3)[2, 2])
+
+
+REGISTRY = {"unitree_mjlab": (unitree_spec, UnitreeMjlabWalker), "gr00t_wbc": (gr00t_spec, Gr00tWalker),
+            "isaac_go1_rough": (isaac_go1_spec, IsaacGo1Walker)}

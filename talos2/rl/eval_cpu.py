@@ -76,7 +76,7 @@ def trial_ext(deg, rng, key, secs=15.0):
         if k == int(5 / EXT.CTRL_DT):
             d.qvel[1] += rng.uniform(-0.4, 0.4)
         w.control_step(m, d, [0.5, 0, 0])
-        if w.upright(d) < 0.5 or d.qpos[2] - np.tan(th) * d.qpos[0] < 0.45:
+        if w.upright(d) < 0.5 or d.qpos[2] - np.tan(th) * d.qpos[0] < 0.5 * w.home_z:
             return {"speed": 0.0, "fell": True}
     return {"speed": float((d.qpos[0] - x0) / np.cos(th) / secs), "fell": False}
 

@@ -261,12 +261,14 @@ Les dépôts sont clonés dans `../ext` (variable `TALOS_EXT`).
 | G1 29 ddl Unitree officiel | 0,45 m/s | 0,19 | 0,00 | **8/8 chutes** |
 | G1 29 ddl NVIDIA GR00T | 0,42 | −0,20 (recule) | 3/8 chutes | **8/8 chutes** |
 | Go1 curriculum terrain UA (nous) | 0,47 | 0,49 | 0,39 | **0,40, 0 chute** |
+| Go1 NVIDIA Isaac Lab terrain accidenté (perceptif) | 0,51 | 0,51 | 0,48 | **0,43, 0 chute** (0,42 à 25°) |
 
 | Missions (graines 100–115, relief ×1,0) | Réussites | Chutes | Bloqués |
 |---|---|---|---|
 | G1 12 ddl Unitree (unitree_rl_gym) | 0/16 | 14 | 2 |
 | G1 29 ddl Unitree officiel | 0/16 | 7 | 9 |
 | G1 29 ddl NVIDIA GR00T | 0/16 | 12 | 4 |
+| Go1 NVIDIA Isaac Lab terrain accidenté | 0/16 | 16 (après 60–90 s) | 0 |
 | **Go1 terrain UA (nous)** | **5/16** | 11 | 0 |
 
 **Lecture** :
@@ -275,6 +277,11 @@ Les dépôts sont clonés dans `../ext` (variable `TALOS_EXT`).
 - Notre propre G1 29 ddl (200 M pas) fait bien pire qu'elles : 24 à 100 % de chutes dès le sol plat.
 - **Limite** : leurs actionneurs et contacts sont reproduits d'après leur code (écart simulateur → simulateur
   possible). Une évaluation dans leurs propres environnements reste à faire.
+- **Isaac Lab Go1** (poids officiels NVIDIA, `Isaac-Velocity-Rough-Unitree-Go1-v0`, chargés en `weights_only`) :
+  - meilleure politique en pente (0,42 m/s à 25°) ;
+  - chute dans les 16 missions après 60 à 90 s de marche ;
+  - limite : son réseau d'actionneurs (TorchScript) est remplacé par un PD Kp 25 / Kd 0,5.
+- Le G1 Isaac Lab (37 ddl, mains Dex3) est écarté : pas de modèle MuJoCo fidèle.
 - *Walk These Ways* (Go1, MIT) n'a pas été intégré : ses poids sont au format pickle / TorchScript (exécution de code
   au chargement).
 
