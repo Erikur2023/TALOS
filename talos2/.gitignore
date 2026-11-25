@@ -1,0 +1,12 @@
+# Donnees telechargees / reconstruites : python -m talos_app.datasets
+data/
+# Modeles Menagerie / Playground copies : python rl/export_models.py (dans WSL)
+rl/models/
+# Points de reprise et parametres JAX (gros) : on garde policy.npz, progress.json, config.json, eval.json
+results/rl/**/*.pkl
+results/rl/*.log
+results/robots/*.log
+__pycache__/
+*.py[cod]
+.pytest_cache/
+*.tmp

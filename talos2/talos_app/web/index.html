@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>TALOS C2 — Supervision robot autonome</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="/web/vendor/maplibre-gl.css">
+<link rel="stylesheet" href="/web/app.css">
+<script type="importmap">{"imports": {"three": "/web/vendor/three.module.js"}}</script>
+</head>
+<body>
+<header id="top">
+  <div class="brand"><span class="logo">◆</span> TALOS <b>C2</b></div>
+  <nav id="views">
+    <button data-view="v-op" class="on">OPÉRATION</button>
+    <button data-view="v-live">ROBOT EN DIRECT</button>
+    <button data-view="v-3d">CARTE 3D</button>
+    <button data-view="v-ana">ANALYSE MISSION</button>
+    <button data-view="v-bench">BENCHMARKS</button>
+    <button data-view="v-rl">ENTRAÎNEMENT</button>
+    <button data-view="v-data">DONNÉES</button>
+  </nav>
+  <div class="badges">
+    <span class="badge red blink" title="Le robot n'utilise aucun GNSS">● GNSS BROUILLÉ</span>
+    <span class="badge amber">SIMULATION</span>
+    <span class="badge" id="b-link">○ LIAISON</span>
+    <span class="badge" id="b-mode">—</span>
+  </div>
+  <div class="clock"><span id="utc">--:--:--</span><small>UTC</small><span id="simt">T+00:00:00</span><small>MISSION</small></div>
+</header>
+
+<div class="view on" id="v-op">
+<aside id="left">
+  <nav class="tabs" data-for="left">
+    <button data-tab="t-mission" class="on">MISSION</button>
+    <button data-tab="t-layers">CALQUES</button>
+    <button data-tab="t-data">DONNÉES</button>
+  </nav>
+
+  <section id="t-mission" class="tab on">
+    <div class="step"><div class="sh"><i>1</i>DÉPART (A)</div>
+      <div class="row"><button class="btn pick" data-pick="A">⌖ Choisir sur la carte</button><select id="selA"><option value="">— point logistique —</option></select></div>
+      <div class="coord" id="cA">non défini</div></div>
+    <div class="step"><div class="sh"><i>2</i>DESTINATION (B)</div>
+      <div class="row"><button class="btn pick" data-pick="B">⌖ Choisir sur la carte</button><select id="selB"><option value="">— position à ravitailler —</option></select></div>
+      <div class="coord" id="cB">non défini</div></div>
+    <div class="step"><div class="sh"><i>3</i>ITINÉRAIRE</div>
+      <div class="seg" id="profile"><button data-v="rapide">Rapide</button><button data-v="equilibre" class="on">Équilibré</button><button data-v="couvert">Sous couvert</button></div>
+      <button class="btn wide" id="bRoute">Calculer l'itinéraire</button>
+      <div id="routeCard" class="card hidden"></div></div>
+    <div class="step"><div class="sh"><i>4</i>ROBOT &amp; EXÉCUTION</div>
+      <label class="fl">Moteur de simulation</label>
+      <div class="seg" id="mode"><button data-v="point" class="on">Rapide (2D)</button><button data-v="g1">G1 humanoïde</button><button data-v="go1">Go1 quadrupède</button></div>
+      <label class="fl">Carte embarquée (recalage LiDAR)</label>
+      <div class="seg four" id="level"><button data-v="sat" class="on" title="Masque de végétation extrait de l'imagerie">Satellite</button><button data-v="lc" title="ESA WorldCover 10 m">Occ. sol</button><button data-v="dem" title="Relief seul">Relief</button><button data-v="none" title="Aucune carte : odométrie">Aucune</button></div>
+      <div class="grid2">
+        <label class="fl">Charge <b id="payV">3.0</b> kg<input type="range" id="payload" min="0" max="3" step="0.5" value="3"></label>
+        <label class="fl">Accélération<select id="speed"><option value="1">×1 temps réel</option><option value="2">×2</option><option value="5">×5</option><option value="10" selected>×10</option><option value="30">×30</option><option value="0">max</option></select></label>
+      </div>
+      <label class="chk"><input type="checkbox" id="delivery" checked> Dépôt au bord de la tranchée puis retrait</label>
+      <button class="btn go wide" id="bStart" disabled>▶ LANCER LA MISSION</button>
+      <div class="row"><button class="btn" id="bPause" disabled>❚❚ Pause</button><button class="btn danger" id="bStop" disabled>■ Arrêt</button><button class="btn" id="bReport" disabled>⇩ Rapport</button></div>
+    </div>
+  </section>
+
+  <section id="t-layers" class="tab">
+    <div class="sh">FOND DE CARTE</div>
+    <div class="radio" id="basemap">
+      <label><input type="radio" name="bm" value="sat" checked> Imagerie satellite</label>
+      <label><input type="radio" name="bm" value="topo"> Topographique</label>
+      <label><input type="radio" name="bm" value="dark"> Sombre</label>
+      <label><input type="radio" name="bm" value="none"> Hors ligne (données locales)</label>
+    </div>
+    <div class="sh">SITUATION</div>
+    <div class="checks" id="layers1"></div>
+    <div class="sh">TERRAIN</div>
+    <div class="checks" id="layers2"></div>
+    <div class="sh">MISSION</div>
+    <div class="checks" id="layers3"></div>
+  </section>
+
+  <section id="t-data" class="tab">
+    <div id="dataInfo" class="card"></div>
+  </section>
+</aside>
+
+<main id="center">
+  <div id="map"></div>
+  <div id="cursor" class="hud mono">—</div>
+  <div id="legend" class="hud">
+    <div><i class="sw" style="background:#ff3b3b"></i>ligne de contact</div>
+    <div><i class="sw" style="background:rgba(255,59,59,.35)"></i>zone occupée</div>
+    <div><i class="sw" style="background:rgba(160,160,160,.45)"></i>zone grise</div>
+    <div><i class="sw" style="background:#3fa9ff"></i>positions amies <b>FICTIVES</b></div>
+    <div><i class="sw" style="background:#00e5ff"></i>itinéraire / robot</div>
+  </div>
+  <div id="picking" class="hud hidden">Cliquez sur la carte pour placer <b id="pickWhat">A</b> · Échap pour annuler</div>
+  <div id="maxi" class="hidden"><div class="mx-head"><span id="mxTitle"></span><button class="btn" id="mxClose">✕ Réduire</button></div><div id="mxBody"></div></div>
+</main>
+
+<aside id="right">
+  <section class="pane" id="p-robot">
+    <div class="ph"><span>VUE ROBOT — G1 / MuJoCo</span>
+      <div class="seg mini" id="cam"><button data-v="suivi" class="on">Suivi</button><button data-v="tete">Tête</button><button data-v="cote">Côté</button><button data-v="dessus">Dessus</button><button data-v="loin">Large</button></div>
+      <button class="mx" data-mx="p-robot" title="Agrandir">⤢</button></div>
+    <div class="pb" id="robotBody"><img id="mjimg" alt=""><div id="mjoff" class="placeholder">Vue physique disponible en mode <b>G1 physique (MuJoCo)</b>.<br>En mode rapide, seul le navigateur et les capteurs sont simulés.</div></div>
+  </section>
+  <section class="pane" id="p-3d">
+    <div class="ph"><span>CARTE 3D CONSTRUITE (LiDAR, repère estimé)</span>
+      <label class="chk mini"><input type="checkbox" id="follow3d" checked>suivre</label>
+      <label class="chk mini"><input type="checkbox" id="ground3d" checked>sol</label>
+      <button class="mx" data-mx="p-3d" title="Agrandir">⤢</button></div>
+    <div class="pb" id="body3d"><canvas id="c3d"></canvas><div class="pinfo mono" id="i3d">0 voxel</div></div>
+  </section>
+  <section class="pane" id="p-2d">
+    <div class="ph"><span>VUE TACTIQUE LOCALE (tuile 400 m)</span>
+      <label class="chk mini"><input type="checkbox" id="t2truth">vérité</label>
+      <label class="chk mini"><input type="checkbox" id="t2part" checked>particules</label>
+      <label class="chk mini"><input type="checkbox" id="t2img" checked>image</label>
+      <button class="mx" data-mx="p-2d" title="Agrandir">⤢</button></div>
+    <div class="pb" id="body2d"><canvas id="c2d"></canvas><div class="pinfo mono" id="i2d"></div></div>
+  </section>
+  <section class="pane kp">
+    <div class="ph"><span>TÉLÉMÉTRIE</span><span id="phase" class="tag">EN ATTENTE</span></div>
+    <div id="kpis"></div>
+    <canvas id="chart"></canvas>
+  </section>
+  <section class="pane lg">
+    <div class="ph"><span>JOURNAL</span><select id="logf"><option value="">tout</option><option value="anomaly">anomalies</option><option value="replan">replanifications</option><option value="delivery">dépôt</option><option value="error">alertes</option></select></div>
+    <div id="log" class="mono"></div>
+  </section>
+</aside>
+
+</div>
+
+<div class="view" id="v-live">
+  <section class="pane big"><div class="ph"><span>VUE ROBOT — MUJOCO (flux temps réel)</span><div class="seg mini" id="cam2"><button data-v="suivi" class="on">Suivi</button><button data-v="tete">Tête</button><button data-v="cote">Côté</button><button data-v="dessus">Dessus</button><button data-v="loin">Large</button></div></div><div class="slot" data-slot="robotBody"></div></section>
+  <section class="pane"><div class="ph"><span>CARTE 3D CONSTRUITE</span></div><div class="slot" data-slot="body3d"></div></section>
+  <section class="pane"><div class="ph"><span>VUE TACTIQUE</span></div><div class="slot" data-slot="body2d"></div></section>
+  <section class="pane strip"><div id="kpisBig"></div></section>
+  <section class="pane"><div class="ph"><span>ERREUR DE POSITION ET INCERTITUDE (m)</span></div><div class="cbox"><canvas id="lc-err"></canvas></div></section>
+  <section class="pane"><div class="ph"><span>VITESSE (m/s)</span></div><div class="cbox"><canvas id="lc-v"></canvas></div></section>
+</div>
+
+<div class="view" id="v-3d">
+  <section class="pane full"><div class="ph"><span>CARTE 3D CONSTRUITE PAR LE ROBOT — voxels 0,5 m, repère estimé · glisser = tourner, clic droit = déplacer, molette = zoom</span></div><div class="slot" data-slot="body3d"></div></section>
+</div>
+
+<div class="view scroll" id="v-ana">
+  <div class="vhead"><h1>Analyse de la mission en cours</h1><span id="anaSub" class="dim"></span><button class="btn" id="anaRefresh">↻ Actualiser</button></div>
+  <div class="cards" id="anaCards"></div>
+  <div class="grid2c">
+    <section class="pane"><div class="ph"><span>LOCALISATION — erreur vraie, incertitude ±2σ</span></div><div class="cbox"><canvas id="a-err"></canvas></div></section>
+    <section class="pane"><div class="ph"><span>VITESSE RÉELLE</span></div><div class="cbox"><canvas id="a-v"></canvas></div></section>
+    <section class="pane"><div class="ph"><span>BATTERIE (%) ET SIGNATURE THERMIQUE (K)</span></div><div class="cbox"><canvas id="a-bat"></canvas></div></section>
+    <section class="pane"><div class="ph"><span>DISTANCE À LA LIGNE DE CONTACT ET DISTANCE RESTANTE (km)</span></div><div class="cbox"><canvas id="a-front"></canvas></div></section>
+    <section class="pane"><div class="ph"><span>ÉVÉNEMENTS PAR TYPE</span></div><div class="cbox"><canvas id="a-ev"></canvas></div></section>
+    <section class="pane"><div class="ph"><span>PENTE DU TERRAIN SOUS LE ROBOT (%)</span></div><div class="cbox"><canvas id="a-slope"></canvas></div></section>
+  </div>
+</div>
+
+<div class="view scroll" id="v-bench">
+  <div class="vhead"><h1>Benchmarks comparatifs</h1><span class="dim">chiffres issus de runs reproductibles (results/) · barres = taux de réussite · traits = IC 95 % (Wilson)</span></div>
+  <div id="benchBody"></div>
+</div>
+
+<div class="view scroll" id="v-rl">
+  <div class="vhead"><h1>Entraînement des politiques de marche (RL)</h1><span class="dim">PPO massivement parallèle sur GPU (MuJoCo MJX / Playground) · terrain accidenté généré depuis les tuiles réelles</span></div>
+  <div id="rlBody"></div>
+</div>
+
+<div class="view scroll" id="v-data">
+  <div class="vhead"><h1>Données de la région</h1></div>
+  <div class="grid2c"><section class="pane"><div class="ph"><span>FICHE RÉGION ET SOURCES</span></div><div id="dataBig" class="pad"></div></section>
+  <section class="pane"><div class="ph"><span>OCCUPATION DU SOL (ESA WorldCover 10 m)</span></div><div class="cbox"><canvas id="d-lc"></canvas></div></section>
+  <section class="pane"><div class="ph"><span>POSITIONS AMIES FICTIVES — distance à la ligne (km)</span></div><div class="cbox"><canvas id="d-al"></canvas></div></section>
+  <section class="pane"><div class="ph"><span>LOCALITÉS PAR TYPE</span></div><div class="cbox"><canvas id="d-pl"></canvas></div></section></div>
+</div>
+
+<footer id="bottom" class="mono">
+  <span id="sb-status">PRÊT — choisissez A et B</span>
+  <span id="sb-right">Sources : ESA WorldCover · Copernicus DEM · © OpenStreetMap · DeepStateMap · Esri · positions amies FICTIVES</span>
+</footer>
+
+<script src="/web/vendor/maplibre-gl.js"></script>
+<script src="/web/vendor/chart.umd.min.js"></script>
+<script type="module" src="/web/app.js"></script>
+</body>
+</html>

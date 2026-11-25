@@ -1,0 +1,138 @@
+[
+ {
+  "vx_cmd": 0.1,
+  "wz_cmd": 0,
+  "incline_mm": 0.0,
+  "speed": 0.103,
+  "yawrate": -0.008,
+  "fell": false
+ },
+ {
+  "vx_cmd": 0.3,
+  "wz_cmd": 0,
+  "incline_mm": 0.0,
+  "speed": 0.279,
+  "yawrate": -0.01,
+  "fell": false
+ },
+ {
+  "vx_cmd": 0.5,
+  "wz_cmd": 0,
+  "incline_mm": 0.0,
+  "speed": 0.452,
+  "yawrate": -0.012,
+  "fell": false
+ },
+ {
+  "vx_cmd": 0.7,
+  "wz_cmd": 0,
+  "incline_mm": 0.0,
+  "speed": 0.629,
+  "yawrate": -0.014,
+  "fell": false
+ },
+ {
+  "vx_cmd": 0.9,
+  "wz_cmd": 0,
+  "incline_mm": 0.0,
+  "speed": 0.795,
+  "yawrate": -0.014,
+  "fell": false
+ },
+ {
+  "vx_cmd": 1.1,
+  "wz_cmd": 0,
+  "incline_mm": 0.0,
+  "speed": 0.948,
+  "yawrate": -0.01,
+  "fell": false
+ },
+ {
+  "vx_cmd": -0.25,
+  "wz_cmd": 0,
+  "incline_mm": 0.0,
+  "speed": 0.209,
+  "yawrate": -0.003,
+  "fell": false
+ },
+ {
+  "vx_cmd": 0,
+  "wz_cmd": 0.2,
+  "incline_mm": 0.0,
+  "speed": 0.025,
+  "yawrate": 0.174,
+  "fell": false
+ },
+ {
+  "vx_cmd": 0,
+  "wz_cmd": 0.4,
+  "incline_mm": 0.0,
+  "speed": 0.02,
+  "yawrate": 0.366,
+  "fell": false
+ },
+ {
+  "vx_cmd": 0,
+  "wz_cmd": 0.8,
+  "incline_mm": 0.0,
+  "speed": 0.001,
+  "yawrate": 0.733,
+  "fell": false
+ },
+ {
+  "vx_cmd": 0.5,
+  "wz_cmd": 0.4,
+  "incline_mm": 0.0,
+  "speed": 0.325,
+  "yawrate": 0.341,
+  "fell": false
+ },
+ {
+  "vx_cmd": 0.5,
+  "wz_cmd": 0.8,
+  "incline_mm": 0.0,
+  "speed": 0.073,
+  "yawrate": 0.689,
+  "fell": false
+ },
+ {
+  "vx_cmd": 0.6,
+  "wz_cmd": 0,
+  "incline_mm": 0.052,
+  "speed": 0.44,
+  "yawrate": -0.014,
+  "fell": false
+ },
+ {
+  "vx_cmd": 0.6,
+  "wz_cmd": 0,
+  "incline_mm": 0.087,
+  "speed": 0.375,
+  "yawrate": -0.014,
+  "fell": false
+ },
+ {
+  "vx_cmd": 0.6,
+  "wz_cmd": 0,
+  "incline_mm": 0.141,
+  "speed": 0.281,
+  "yawrate": -0.013,
+  "fell": false
+ },
+ {
+  "vx_cmd": 0.6,
+  "wz_cmd": 0,
+  "incline_mm": 0.194,
+  "speed": 0.191,
+  "yawrate": -0.023,
+  "fell": false
+ },
+ {
+  "vx_cmd": 0.6,
+  "wz_cmd": 0,
+  "incline_mm": 0.249,
+  "speed": 0.127,
+  "yawrate": -0.036,
+  "fell": false
+ }
+]

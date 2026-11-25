@@ -1,0 +1,45 @@
+{
+ "summary": [
+  {
+   "label": "Go1 \u2014 plat, r\u00e9compense par d\u00e9faut",
+   "run": "go1_plat_sans_mise_en_forme",
+   "n": 512,
+   "success": 13,
+   "falls": 3,
+   "speed_mean": 0.015
+  },
+  {
+   "label": "Go1 \u2014 sol plat",
+   "run": "go1_sol_plat",
+   "n": 512,
+   "success": 57,
+   "falls": 432,
+   "speed_mean": 0.105
+  },
+  {
+   "label": "Go1 \u2014 curriculum plat\u2192UA",
+   "run": "go1_terrain_ua",
+   "n": 512,
+   "success": 265,
+   "falls": 227,
+   "speed_mean": 0.158
+  },
+  {
+   "label": "G1 29 ddl \u2014 sol plat",
+   "run": "g1_sol_plat",
+   "n": 512,
+   "success": 0,
+   "falls": 512,
+   "speed_mean": 0.019
+  },
+  {
+   "label": "G1 29 ddl \u2014 curriculum plat\u2192UA",
+   "run": "g1_terrain_ua",
+   "n": 512,
+   "success": 64,
+   "falls": 322,
+   "speed_mean": 0.073
+  }
+ ],
+ "note": "terrain UA inedit (graines 101-102), 512 essais de 20 s par robot, charge 3 kg ; reussite = sans chute et erreur de suivi < 0,25 m/s"
+}
