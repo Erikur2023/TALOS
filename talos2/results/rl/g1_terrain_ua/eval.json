@@ -1,0 +1,47 @@
+{
+ "rows": [
+  {
+   "test": "pente 0 deg",
+   "vitesse_m_s": -0.03701161965727806,
+   "chutes_pct": 24.21875
+  },
+  {
+   "test": "pente 5 deg",
+   "vitesse_m_s": -0.13012757897377014,
+   "chutes_pct": 27.34375
+  },
+  {
+   "test": "pente 10 deg",
+   "vitesse_m_s": -0.165338933467865,
+   "chutes_pct": 42.1875
+  },
+  {
+   "test": "pente 15 deg",
+   "vitesse_m_s": -0.0912933349609375,
+   "chutes_pct": 74.21875
+  },
+  {
+   "test": "pente 20 deg",
+   "vitesse_m_s": -0.004869002383202314,
+   "chutes_pct": 98.4375
+  },
+  {
+   "test": "pente 25 deg",
+   "vitesse_m_s": 0.0,
+   "chutes_pct": 100.0
+  },
+  {
+   "test": "terrain UA graine 101",
+   "vitesse_m_s": 0.0980350598692894,
+   "chutes_pct": 69.921875,
+   "erreur_suivi_m_s": 0.25020234599519015
+  },
+  {
+   "test": "terrain UA graine 102",
+   "vitesse_m_s": 0.04860268905758858,
+   "chutes_pct": 55.859375,
+   "erreur_suivi_m_s": 0.281513313960524
+  }
+ ],
+ "wall_s": 2206
+}

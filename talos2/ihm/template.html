@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>TALOS — Supervision de mission</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+  :root{--bg:#0b1016;--panel:#111a23;--line:#1f2d3b;--tx:#cfe3f1;--dim:#7f96a8;--cy:#4cc9f0;--am:#ffb703;--rd:#ef476f;--gn:#06d6a0;--or:#ff9f1c}
+  *{box-sizing:border-box}
+  html,body{margin:0;height:100%;background:var(--bg);color:var(--tx);font:13px/1.35 system-ui,Segoe UI,Roboto,sans-serif}
+  body{display:grid;grid-template-rows:auto 1fr auto;gap:8px;padding:8px}
+  header{display:flex;align-items:center;gap:14px;flex-wrap:wrap;background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:8px 12px}
+  header h1{font-size:14px;letter-spacing:.12em;margin:0;font-weight:700}
+  .badge{font:600 11px ui-monospace,Consolas,monospace;padding:3px 8px;border-radius:4px;border:1px solid var(--line)}
+  .gps{color:var(--rd);border-color:#5a2434;background:#2a1119}
+  .sim{color:var(--am);border-color:#5a4410;background:#2a2008}
+  .sp{flex:1}
+  select,button{background:#16212c;color:var(--tx);border:1px solid var(--line);border-radius:6px;padding:5px 9px;font:inherit;cursor:pointer}
+  button:hover,select:hover{border-color:var(--cy)}
+  main{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(320px,1fr);gap:8px;min-height:0}
+  .col{display:grid;gap:8px;min-height:0}
+  .left{grid-template-rows:minmax(0,1fr) 150px}
+  .right{grid-template-rows:auto auto minmax(0,1fr) minmax(0,1.3fr) 150px}
+  .panel{background:var(--panel);border:1px solid var(--line);border-radius:8px;position:relative;overflow:hidden;min-height:0}
+  .panel>h2{position:absolute;top:6px;left:10px;margin:0;font:600 10px system-ui;letter-spacing:.14em;color:var(--dim);z-index:2;text-transform:uppercase;pointer-events:none}
+  canvas{width:100%;height:100%;display:block}
+  .opts{position:absolute;top:4px;right:8px;display:flex;gap:10px;z-index:3;font-size:11px;color:var(--dim)}
+  .opts label{cursor:pointer;display:flex;gap:4px;align-items:center}
+  .kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--line)}
+  .kpi{background:var(--panel);padding:8px 10px}
+  .kpi b{display:block;font:600 19px ui-monospace,Consolas,monospace}
+  .kpi span{font-size:10px;color:var(--dim);letter-spacing:.08em;text-transform:uppercase}
+  .bar{height:6px;background:#0a1118;border-radius:3px;margin-top:5px;position:relative;overflow:hidden}
+  .bar i{display:block;height:100%;background:var(--gn)}
+  .bar u{position:absolute;top:0;bottom:0;width:2px;background:var(--rd)}
+  #log{position:absolute;inset:24px 6px 6px 6px;overflow:auto;font:11.5px ui-monospace,Consolas,monospace}
+  #log div{padding:2px 4px;border-bottom:1px solid #16212c}
+  #log .anomaly{color:var(--am)} #log .contact{color:var(--rd)} #log .replan{color:var(--cy)}
+  footer{display:flex;gap:10px;align-items:center;background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:6px 12px}
+  footer input[type=range]{flex:1}
+  .mono{font-family:ui-monospace,Consolas,monospace}
+  .note{color:var(--dim);font-size:11px}
+</style>
+</head>
+<body>
+<header>
+  <h1>TALOS &middot; SUPERVISION DE MISSION</h1>
+  <span class="badge gps">GNSS BROUILLÉ</span>
+  <span class="badge sim">SIMULATION &mdash; données issues de benchmark/sim.py</span>
+  <span class="sp"></span>
+  <label class="note">Scénario&nbsp;<select id="run"></select></label>
+  <span id="status" class="badge"></span>
+</header>
+<main>
+  <div class="col left">
+    <section class="panel"><h2>Carte &mdash; vue de dessus</h2>
+      <div class="opts">
+        <label><input type="checkbox" id="oPrior" checked>carte mémoire</label>
+        <label><input type="checkbox" id="oScan" checked>LiDAR</label>
+        <label><input type="checkbox" id="oCloud">particules</label>
+        <label><input type="checkbox" id="oDR">odométrie seule</label>
+        <label><input type="checkbox" id="oTruth">vérité terrain (sim)</label>
+        <label id="lSat" style="display:none"><input type="checkbox" id="oSat" checked>image satellite</label>
+      </div>
+      <canvas id="map"></canvas></section>
+    <section class="panel"><h2>Erreur de position (m) &amp; batterie</h2><canvas id="chart"></canvas></section>
+  </div>
+  <div class="col right">
+    <section class="panel kpis" id="kpis"></section>
+    <section class="panel" id="mjpanel" style="display:none"><h2>Unitree G1 sous MuJoCo &mdash; politique de marche Unitree pilotée par ce navigateur</h2>
+      <div id="mj" style="display:flex;gap:6px;overflow-x:auto;padding:6px"></div><div id="mjtab" class="note" style="padding:0 8px 8px"></div></section>
+    <section class="panel"><h2>Reconstruction 3D &mdash; glisser pour tourner, molette pour zoomer</h2><canvas id="v3d"></canvas></section>
+    <section class="panel"><h2>Carte 3D construite par le robot (tout ce qu'il a vu) &mdash; glisser / molette / double-clic = plein écran</h2><canvas id="v3m"></canvas>
+      <div class="note" style="position:absolute;bottom:18px;left:10px;right:10px;pointer-events:none">voxels 0,5 m posés à la position <b>estimée</b> : sol coloré par l'altitude, obstacles en orange (troncs, murs, cratères) ; une erreur de localisation se voit comme un dédoublement</div></section>
+    <section class="panel"><h2>Journal de mission</h2><div id="log"></div></section>
+  </div>
+</main>
+<footer>
+  <button id="play">&#9654; Lecture</button>
+  <input type="range" id="scrub" min="0" max="1000" value="0">
+  <span class="mono" id="clock">t = 0 s</span>
+  <label class="note">Vitesse&nbsp;<select id="speed"><option>1</option><option>4</option><option selected>10</option><option>30</option><option>60</option></select>&times;</label>
+</footer>
+<script>
+const DATA = /*DATA*/null;
+const F = {t:0,x:1,y:2,yaw:3,ex:4,ey:5,eyaw:6,sig:7,v:8,bat:9,eta:10,err:11,drx:12,dry:13,mud:14,slope:15,rem:16,dT:17,load:18,phase:19};
+const PHASE = {NAV:'navigation', APPROACH:'approche tranchée', DROP:'dépôt de la charge', RETREAT:'retrait', DONE:'mission terminée'};
+const $ = id => document.getElementById(id);
+const runSel = $('run');
+Object.keys(DATA.runs).forEach(k => { const o = document.createElement('option'); o.value = k; o.textContent = DATA.runs[k].label; runSel.appendChild(o); });
+let run, T, W, tNow = 0, playing = false, last = 0;
+
+function setRun(k){
+  run = DATA.runs[k]; T = run.telemetry; W = T.world;
+  tNow = 0; buildTerrain();
+  sat = null; $('lSat').style.display = W.image ? '' : 'none';
+  if (W.image){ sat = new Image(); sat.onload = draw; sat.src = W.image; } $('scrub').max = T.frames.length - 1;
+  const m = run.metrics;
+  const ok = m.success;
+  $('status').textContent = (ok ? 'MISSION RÉUSSIE' : 'MISSION ÉCHOUÉE') + ' — arrêt : ' + m.status;
+  $('status').style.color = ok ? 'var(--gn)' : 'var(--rd)';
+  $('status').style.borderColor = ok ? '#0d5d4b' : '#5a2434';
+  draw();
+}
+runSel.onchange = () => setRun(runSel.value);
+if (DATA.mujoco){
+  $('mjpanel').style.display = '';
+  $('mj').innerHTML = (DATA.mujoco.images || []).map(u => `<img src="${u}" style="height:120px;border:1px solid var(--line)">`).join('');
+  $('mjtab').innerHTML = (DATA.mujoco.rows || []).map(r => `<div>${r}</div>`).join('');
+}
+
+/* ---------- terrain pré-calculé (ombrage) ---------- */
+let terr = null, H, NH, sat = null;
+function buildTerrain(){
+  H = W.height; NH = H.length;
+  const c = document.createElement('canvas'); c.width = NH; c.height = NH;
+  const g = c.getContext('2d'), im = g.createImageData(NH, NH);
+  let mn = 1e9, mx = -1e9; H.forEach(r => r.forEach(v => { mn = Math.min(mn, v); mx = Math.max(mx, v); }));
+  for (let i = 0; i < NH; i++) for (let j = 0; j < NH; j++){
+    const dx = (H[i][Math.min(NH-1,j+1)] - H[i][Math.max(0,j-1)]), dy = (H[Math.min(NH-1,i+1)][j] - H[Math.max(0,i-1)][j]);
+    const sh = Math.max(-1, Math.min(1, (-dx - dy) * 0.18));
+    const hgt = (H[i][j] - mn) / (mx - mn + 1e-9);
+    let r = 26 + 28*hgt + 40*sh, gg = 36 + 30*hgt + 42*sh, b = 40 + 22*hgt + 36*sh;
+    if (W.mud[i][j]) { r += 34; gg += 18; b -= 8; }
+    const p = (i*NH + j) * 4; im.data[p] = r; im.data[p+1] = gg; im.data[p+2] = b; im.data[p+3] = 255;
+  }
+  g.putImageData(im, 0, 0); terr = c;
+}
+function hAt(x, y){
+  const i = Math.max(0, Math.min(NH-1, Math.round(y / W.size * NH))), j = Math.max(0, Math.min(NH-1, Math.round(x / W.size * NH)));
+  return H[i][j];
+}
+function fidx(){ return Math.min(T.frames.length-1, Math.floor(tNow / 0.5)); }
+
+/* ---------- carte ---------- */
+function fit(cv){ const r = cv.getBoundingClientRect(), d = devicePixelRatio || 1; cv.width = r.width*d; cv.height = r.height*d; const g = cv.getContext('2d'); g.setTransform(d,0,0,d,0,0); return [g, r.width, r.height]; }
+function drawMap(){
+  const [g, w, h] = fit($('map')); g.clearRect(0,0,w,h);
+  const s = Math.min(w, h) - 16, ox = (w - s)/2, oy = (h - s)/2, k = s / W.size;
+  const X = x => ox + x*k, Y = y => oy + s - y*k;
+  g.imageSmoothingEnabled = true; g.drawImage(terr, ox, oy, s, s);
+  if (sat && sat.complete && $('oSat').checked){ g.globalAlpha = .85; g.drawImage(sat, ox, oy, s, s); g.globalAlpha = 1; }
+  g.strokeStyle = '#1f2d3b'; g.lineWidth = 1; g.strokeRect(ox, oy, s, s);
+  g.fillStyle = '#7f96a8'; g.font = '10px ui-monospace'; for (let m = 0; m <= W.size; m += 50){ g.fillText(m + ' m', X(m) + 2, oy + s + 11); }
+  const fi = fidx(), f = T.frames[fi];
+  if ($('oPrior').checked){ g.fillStyle = 'rgba(160,185,200,.42)'; W.prior_trees.forEach(t => { g.beginPath(); g.arc(X(t[0]), Y(t[1]), Math.max(1, t[2]*k), 0, 6.3); g.fill(); }); }
+  if ($('oTruth').checked){ g.strokeStyle = 'rgba(6,214,160,.55)'; g.lineWidth = 1; W.trees.forEach(t => { g.beginPath(); g.arc(X(t[0]), Y(t[1]), Math.max(1.2, t[2]*k), 0, 6.3); g.stroke(); });
+    g.strokeStyle = 'rgba(239,71,111,.9)'; g.setLineDash([3,3]); W.anomalies.forEach(a => { g.beginPath(); g.arc(X(a[0]), Y(a[1]), a[2]*k, 0, 6.3); g.stroke(); }); g.setLineDash([]); }
+  // tranchée
+  g.strokeStyle = '#ffb703'; g.lineWidth = 2; g.beginPath(); W.trench.forEach((p, i) => i ? g.lineTo(X(p[0]), Y(p[1])) : g.moveTo(X(p[0]), Y(p[1]))); g.stroke();
+  // chemin planifié courant
+  let pi = 0; T.paths.forEach((p, i) => { if (p.t <= tNow) pi = i; });
+  g.strokeStyle = 'rgba(255,255,255,.55)'; g.setLineDash([5,4]); g.lineWidth = 1.2; g.beginPath(); T.paths[pi].pts.forEach((p, i) => i ? g.lineTo(X(p[0]), Y(p[1])) : g.moveTo(X(p[0]), Y(p[1]))); g.stroke(); g.setLineDash([]);
+  // traces
+  const trace = (ix, iy, col, wd) => { g.strokeStyle = col; g.lineWidth = wd; g.beginPath(); for (let i = 0; i <= fi; i++){ const q = T.frames[i]; i ? g.lineTo(X(q[ix]), Y(q[iy])) : g.moveTo(X(q[ix]), Y(q[iy])); } g.stroke(); };
+  if ($('oDR').checked) trace(F.drx, F.dry, 'rgba(255,159,28,.9)', 1.5);
+  if ($('oTruth').checked) trace(F.x, F.y, 'rgba(6,214,160,.95)', 1.5);
+  trace(F.ex, F.ey, '#4cc9f0', 2.2);
+  // particules / lidar
+  const si = Math.min(T.scans.length-1, Math.floor(tNow));
+  if ($('oCloud').checked && T.cloud.length){ g.fillStyle = 'rgba(255,255,255,.5)'; (T.cloud[Math.min(T.cloud.length-1, si)]||[]).forEach(p => g.fillRect(X(p[0])-1, Y(p[1])-1, 2, 2)); }
+  if ($('oScan').checked && T.scans[si]){ g.fillStyle = '#ef476f'; T.scans[si].forEach(p => g.fillRect(X(p[0])-1.5, Y(p[1])-1.5, 3, 3)); }
+  // anomalies détectées
+  T.events.forEach(e => { if (e.t <= tNow && e.type === 'anomaly'){ g.strokeStyle = '#ffb703'; g.lineWidth = 2; g.beginPath(); g.moveTo(X(e.x), Y(e.y)-8); g.lineTo(X(e.x)-7, Y(e.y)+6); g.lineTo(X(e.x)+7, Y(e.y)+6); g.closePath(); g.stroke(); }
+    if (e.t <= tNow && e.type === 'contact'){ g.fillStyle = '#ef476f'; g.beginPath(); g.arc(X(e.x), Y(e.y), 3, 0, 6.3); g.fill(); } });
+  // départ / but
+  g.fillStyle = '#06d6a0'; g.beginPath(); g.arc(X(W.start[0]), Y(W.start[1]), 5, 0, 6.3); g.fill();
+  g.strokeStyle = '#ffb703'; g.lineWidth = 2; g.beginPath(); g.arc(X(W.goal[0]), Y(W.goal[1]), 9, 0, 6.3); g.stroke(); g.beginPath(); g.arc(X(W.goal[0]), Y(W.goal[1]), 3, 0, 6.3); g.fillStyle = '#ffb703'; g.fill();
+  // cercle d'incertitude et robot
+  const sg = Math.max(f[F.sig], .3) * 2 * k; g.strokeStyle = 'rgba(76,201,240,.6)'; g.lineWidth = 1; g.beginPath(); g.arc(X(f[F.ex]), Y(f[F.ey]), Math.max(sg, 4), 0, 6.3); g.stroke();
+  g.save(); g.translate(X(f[F.ex]), Y(f[F.ey])); g.rotate(-f[F.eyaw]); g.fillStyle = '#4cc9f0'; g.beginPath(); g.moveTo(9, 0); g.lineTo(-6, -5); g.lineTo(-6, 5); g.closePath(); g.fill(); g.restore();
+  g.fillStyle = '#cfe3f1'; g.font = '11px system-ui'; g.fillText('DÉPART', X(W.start[0]) + 8, Y(W.start[1]) + 4); g.fillText('OBJECTIF (tranchée)', X(W.goal[0]) - 60, Y(W.goal[1]) - 14);
+}
+
+/* ---------- 3D ---------- */
+let az = 0.6, el = 0.62, zoom = 1, drag = null;
+const v3 = $('v3d');
+v3.addEventListener('pointerdown', e => { drag = [e.clientX, e.clientY]; v3.setPointerCapture(e.pointerId); });
+v3.addEventListener('pointerup', () => drag = null);
+v3.addEventListener('pointermove', e => { if (!drag) return; az += (e.clientX - drag[0]) * .008; el = Math.max(.1, Math.min(1.5, el + (e.clientY - drag[1]) * .006)); drag = [e.clientX, e.clientY]; draw3d(); });
+v3.addEventListener('wheel', e => { e.preventDefault(); zoom = Math.max(.4, Math.min(3, zoom * (e.deltaY > 0 ? .9 : 1.1))); draw3d(); }, {passive:false});
+function draw3d(){
+  const [g, w, h] = fit(v3); g.clearRect(0,0,w,h);
+  const f = T.frames[fidx()], cx = f[F.ex], cy = f[F.ey], cz = hAt(cx, cy), R = 45;
+  const ca = Math.cos(az), sa = Math.sin(az), ce = Math.cos(el), se = Math.sin(el), D = 70 / zoom, FL = Math.min(w, h) * 1.05;
+  const P = (x, y, z) => { let dx = x - cx, dy = y - cy, dz = (z - cz) * 1.6;
+    const rx = dx*ca - dy*sa, ry = dx*sa + dy*ca;
+    const yy = ry*ce - dz*se, zz = ry*se + dz*ce, depth = D + yy;
+    if (depth < 3) return null; const sc = FL / depth; return [w/2 + rx*sc, h*0.58 - zz*sc, sc]; };
+  // grille de terrain
+  g.lineWidth = 1; const st = 3;
+  const drawLine = (pts, col) => { g.strokeStyle = col; g.beginPath(); let on = false; pts.forEach(p => { if (!p) { on = false; return; } on ? g.lineTo(p[0], p[1]) : g.moveTo(p[0], p[1]); on = true; }); g.stroke(); };
+  const x0 = Math.floor((cx - R) / st) * st, x1 = cx + R, y0 = Math.floor((cy - R) / st) * st, y1 = cy + R;
+  for (let y = y0; y <= y1; y += st){ const pts = []; for (let x = x0; x <= x1; x += st) pts.push(P(x, y, hAt(x, y))); drawLine(pts, 'rgba(76,201,240,.16)'); }
+  for (let x = x0; x <= x1; x += st){ const pts = []; for (let y = y0; y <= y1; y += st) pts.push(P(x, y, hAt(x, y))); drawLine(pts, 'rgba(76,201,240,.16)'); }
+  // nuage de points LiDAR accumulé (estimé) : troncs verticaux
+  const si = Math.min(T.scans.length-1, Math.floor(tNow));
+  for (let i = Math.max(0, si - 25); i <= si; i++){
+    const a = 1 - (si - i) / 28; g.strokeStyle = 'rgba(239,71,111,' + (0.25 + 0.6*a).toFixed(2) + ')'; g.lineWidth = 1.2;
+    T.scans[i].forEach(p => { if (Math.abs(p[0]-cx) > R || Math.abs(p[1]-cy) > R) return; const z0 = hAt(p[0], p[1]); const a0 = P(p[0], p[1], z0), a1 = P(p[0], p[1], z0 + 3.2); if (a0 && a1){ g.beginPath(); g.moveTo(a0[0], a0[1]); g.lineTo(a1[0], a1[1]); g.stroke(); } });
+  }
+  // chemin planifié
+  let pi = 0; T.paths.forEach((p, i) => { if (p.t <= tNow) pi = i; });
+  g.strokeStyle = 'rgba(255,255,255,.8)'; g.setLineDash([5,4]); g.lineWidth = 1.4; g.beginPath(); let on = false;
+  T.paths[pi].pts.forEach(p => { if (Math.abs(p[0]-cx) > R*1.4 || Math.abs(p[1]-cy) > R*1.4) { on = false; return; } const q = P(p[0], p[1], hAt(p[0], p[1]) + .2); if (!q) return; on ? g.lineTo(q[0], q[1]) : g.moveTo(q[0], q[1]); on = true; }); g.stroke(); g.setLineDash([]);
+  // objectif si visible
+  const gq = P(W.goal[0], W.goal[1], hAt(W.goal[0], W.goal[1])); if (gq && Math.hypot(W.goal[0]-cx, W.goal[1]-cy) < R*1.4){ g.strokeStyle = '#ffb703'; g.lineWidth = 2; g.beginPath(); g.arc(gq[0], gq[1], 10, 0, 6.3); g.stroke(); }
+  // robot
+  const r0 = P(cx, cy, cz), r1 = P(cx, cy, cz + 1.3); if (r0 && r1){ g.strokeStyle = '#4cc9f0'; g.lineWidth = 4; g.beginPath(); g.moveTo(r0[0], r0[1]); g.lineTo(r1[0], r1[1]); g.stroke();
+    const hx = cx + Math.cos(f[F.eyaw])*2.5, hy = cy + Math.sin(f[F.eyaw])*2.5, hq = P(hx, hy, hAt(hx, hy) + .3); if (hq){ g.strokeStyle = '#4cc9f0'; g.lineWidth = 2; g.beginPath(); g.moveTo(r0[0], r0[1]); g.lineTo(hq[0], hq[1]); g.stroke(); } }
+  g.fillStyle = '#7f96a8'; g.font = '10px ui-monospace'; g.fillText('fenêtre ±' + R + ' m · pointillés = chemin planifié · rouge = LiDAR (positions estimées)', 10, h - 8);
+}
+
+/* ---------- carte 3D construite (voxels) ---------- */
+let maz = -0.7, mel = 0.75, mzoom = 1.7, mdrag = null;
+const vm = $('v3m');
+vm.addEventListener('pointerdown', e => { mdrag = [e.clientX, e.clientY]; vm.setPointerCapture(e.pointerId); });
+vm.addEventListener('pointerup', () => mdrag = null);
+vm.addEventListener('dblclick', () => { document.fullscreenElement ? document.exitFullscreen() : vm.parentElement.requestFullscreen(); setTimeout(draw3m, 200); });
+vm.addEventListener('pointermove', e => { if (!mdrag) return; maz += (e.clientX - mdrag[0]) * .008; mel = Math.max(.15, Math.min(1.5, mel + (e.clientY - mdrag[1]) * .006)); mdrag = [e.clientX, e.clientY]; draw3m(); });
+vm.addEventListener('wheel', e => { e.preventDefault(); mzoom = Math.max(.3, Math.min(6, mzoom * (e.deltaY > 0 ? .9 : 1.1))); draw3m(); }, {passive:false});
+function draw3m(){
+  const [g, w, h] = fit(vm); g.fillStyle = '#05090d'; g.fillRect(0,0,w,h);
+  const V = T.vox || []; if (!V.length){ g.fillStyle = '#7f96a8'; g.fillText('pas de carte 3D pour ce run', 12, 20); return; }
+  let n = 0; while (n < V.length && V[n][4] <= tNow) n++;
+  let x0 = 1e9, x1 = -1e9, y0 = 1e9, y1 = -1e9, z0 = 1e9, z1 = -1e9;
+  for (const v of V){ x0 = Math.min(x0, v[0]); x1 = Math.max(x1, v[0]); y0 = Math.min(y0, v[1]); y1 = Math.max(y1, v[1]); if (!v[3]){ z0 = Math.min(z0, v[2]); z1 = Math.max(z1, v[2]); } }
+  const cx = (x0 + x1) / 2, cy = (y0 + y1) / 2, cz = z0, span = Math.max(x1 - x0, y1 - y0, 20);
+  const ca = Math.cos(maz), sa = Math.sin(maz), ce = Math.cos(mel), se = Math.sin(mel), D = span * 1.3 / mzoom, FL = Math.min(w, h) * 1.15, ZX = 2.0;
+  const P = (x, y, z) => { const dx = x - cx, dy = y - cy, dz = (z - cz) * ZX; const rx = dx*ca - dy*sa, ry = dx*sa + dy*ca;
+    const yy = ry*ce - dz*se, zz = ry*se + dz*ce, depth = D + yy; if (depth < 2) return null; const sc = FL / depth; return [w/2 + rx*sc, h*0.55 - zz*sc, sc, depth]; };
+  const pts = [];
+  for (let i = 0; i < n; i++){ const v = V[i], q = P(v[0], v[1], v[2]); if (q) pts.push([q, v]); }
+  pts.sort((a, b) => b[0][3] - a[0][3]);
+  const zr = Math.max(1, z1 - z0);
+  for (const [q, v] of pts){
+    const sz = Math.max(1, Math.min(6, q[2] * 0.5));
+    if (v[3]){ const a = Math.min(1, (v[2] - cz) / 12); g.fillStyle = `rgb(${255},${Math.round(140 - 80*a)},${Math.round(40 + 40*a)})`; }
+    else { const a = (v[2] - z0) / zr; g.fillStyle = `rgb(${Math.round(30 + 60*a)},${Math.round(90 + 120*a)},${Math.round(140 - 40*a)})`; }
+    g.fillRect(q[0] - sz/2, q[1] - sz/2, sz, sz);
+  }
+  const f = T.frames[fidx()], r0 = P(f[F.ex], f[F.ey], hAt(f[F.ex], f[F.ey]) + 1.5);
+  if (r0){ g.fillStyle = '#4cc9f0'; g.beginPath(); g.arc(r0[0], r0[1], 5, 0, 6.3); g.fill(); }
+  g.fillStyle = '#7f96a8'; g.font = '10px ui-monospace'; g.fillText(n + ' voxels vus · ' + Math.round(x1 - x0) + ' × ' + Math.round(y1 - y0) + ' m · relief ×' + ZX, 10, h - 8);
+}
+
+/* ---------- KPI, journal, courbes ---------- */
+function kpis(){
+  const f = T.frames[fidx()], m = run.metrics, usable = T.params.battery_wh * (1 - T.params.reserve);
+  const pct = Math.max(0, f[F.bat] / T.params.battery_wh * 100), res = T.params.reserve * 100;
+  const eta = f[F.eta], mm = Math.floor(eta / 60), ss = Math.round(eta % 60);
+  const cell = (v, l, extra='') => `<div class="kpi"><b>${v}</b><span>${l}</span>${extra}</div>`;
+  $('kpis').innerHTML =
+    cell(f[F.rem].toFixed(0) + ' m', 'distance restante') +
+    cell((mm + ':' + String(ss).padStart(2,'0')), 'temps restant estimé') +
+    cell('±' + f[F.sig].toFixed(1) + ' m', 'incertitude position') +
+    cell(f[F.v].toFixed(2) + ' m/s', 'vitesse réelle', `<div class="note">${f[F.mud] ? 'sol meuble' : 'sol portant'} · pente ${(f[F.slope]*100).toFixed(0)} %</div>`) +
+    cell(pct.toFixed(0) + ' %', 'batterie (modèle)', `<div class="bar"><i style="width:${pct}%"></i><u style="left:${res}%"></u></div>`) +
+    cell(f[F.err].toFixed(1) + ' m', 'erreur vs vérité (sim)', '<div class="note">inconnue en réel</div>') +
+    (f.length > F.phase ? (
+      cell('+' + f[F.dT].toFixed(1) + ' K', 'signature thermique', `<div class="note">détectable à ~${Math.round(1500*Math.sqrt(Math.max(0,f[F.dT])/10))} m (modèle, ciel dégagé)</div>`) +
+      cell(f[F.load].toFixed(1) + ' kg', 'charge portée', `<div class="note">max. 3 kg (bras G1)</div>`) +
+      cell(PHASE[f[F.phase]] || f[F.phase], 'phase', m.drop_edge_dist_m != null ? `<div class="note">dépôt à ${m.drop_edge_dist_m} m du bord</div>` : '')) : '');
+}
+function log(){
+  const ev = T.events.filter(e => e.t <= tNow), el = $('log');
+  const icon = {anomaly:'⚠', contact:'✖', replan:'↻', delivery:'▣'};
+  const html = ev.map(e => `<div class="${e.type}">[${String(Math.floor(e.t/60)).padStart(2,'0')}:${String(Math.round(e.t%60)).padStart(2,'0')}] ${icon[e.type]||'•'} ${e.text}${e.x != null ? ` (${(+e.x).toFixed(0)}, ${(+e.y).toFixed(0)})` : ''}</div>`).reverse().join('');
+  if (el.dataset.n != ev.length){ el.innerHTML = html || '<div class="note">Aucun événement.</div>'; el.dataset.n = ev.length; }
+}
+function chart(){
+  const [g, w, h] = fit($('chart')); g.clearRect(0,0,w,h);
+  const fr = T.frames, n = fr.length, L = 40, B = 18, Tp = 20, Rr = 10, pw = w - L - Rr, ph = h - B - Tp;
+  const tmax = fr[n-1][0], emax = Math.max(5, ...fr.map(f => Math.max(f[F.err], Math.hypot(f[F.drx]-f[F.x], f[F.dry]-f[F.y])))) * 1.1;
+  const X = t => L + t / tmax * pw, Y = e => Tp + ph - e / emax * ph;
+  g.strokeStyle = '#1f2d3b'; g.fillStyle = '#7f96a8'; g.font = '10px ui-monospace'; g.lineWidth = 1;
+  for (let i = 0; i <= 4; i++){ const e = emax * i / 4; g.beginPath(); g.moveTo(L, Y(e)); g.lineTo(L + pw, Y(e)); g.stroke(); g.fillText(e.toFixed(0), 8, Y(e) + 3); }
+  const line = (fn, col, wd) => { g.strokeStyle = col; g.lineWidth = wd; g.beginPath(); fr.forEach((f, i) => { const x = X(f[0]), y = fn(f); i ? g.lineTo(x, y) : g.moveTo(x, y); }); g.stroke(); };
+  line(f => Y(Math.hypot(f[F.drx]-f[F.x], f[F.dry]-f[F.y])), 'rgba(255,159,28,.8)', 1.2);
+  line(f => Y(f[F.err]), '#4cc9f0', 2);
+  g.strokeStyle = 'rgba(6,214,160,.7)'; g.lineWidth = 1.2; g.beginPath(); fr.forEach((f, i) => { const y = Tp + ph - (f[F.bat] / T.params.battery_wh) * ph * 0.9; i ? g.lineTo(X(f[0]), y) : g.moveTo(X(f[0]), y); }); g.stroke();
+  const nx = X(tNow); g.strokeStyle = '#ffffff'; g.beginPath(); g.moveTo(nx, Tp); g.lineTo(nx, Tp + ph); g.stroke();
+  g.font = '11px system-ui'; g.fillStyle = '#4cc9f0'; g.fillText('■ erreur avec recalage carte', L + 8, 13); g.fillStyle = '#ff9f1c'; g.fillText('■ erreur odométrie seule', L + 190, 13); g.fillStyle = '#06d6a0'; g.fillText('■ batterie', L + 350, 13);
+}
+
+function draw(){ drawMap(); draw3d(); draw3m(); kpis(); log(); chart(); $('clock').textContent = 't = ' + Math.floor(tNow) + ' s / ' + Math.floor(T.frames[T.frames.length-1][0]) + ' s'; $('scrub').value = fidx(); }
+$('scrub').oninput = e => { tNow = e.target.value * 0.5; draw(); };
+$('play').onclick = () => { playing = !playing; $('play').innerHTML = playing ? '&#10074;&#10074; Pause' : '&#9654; Lecture'; last = performance.now(); if (playing) requestAnimationFrame(loop); };
+function loop(ts){ if (!playing) return; const dt = (ts - last) / 1000; last = ts; tNow += dt * parseFloat($('speed').value); const end = T.frames[T.frames.length-1][0]; if (tNow >= end){ tNow = end; playing = false; $('play').innerHTML = '&#9654; Lecture'; } draw(); if (playing) requestAnimationFrame(loop); }
+['oPrior','oScan','oCloud','oDR','oTruth','oSat'].forEach(i => $(i).onchange = draw);
+addEventListener('resize', draw);
+setRun(runSel.value || Object.keys(DATA.runs)[0]);
+</script>
+</body>
+</html>
